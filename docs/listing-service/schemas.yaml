@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Listing API Schemas
+  version: 1.0.0
+components:
+  schemas:
+    ListingMetadata:
+      type: object
+      properties:
+        color:
+          type: string
+        material:
+          type: string
+        size:
+          type: string
+      required:
+        - color
+        - material
+        - size
+
+    ListingInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The title or name of the listing
+        mainCategory:
+          type: string
+          description: Main category under which the listing is classified
+        subCategory:
+          type: string
+          description: Sub-category for more specific classification
+        price:
+          type: number
+          format: float
+          description: Price of the item or service
+        priceNegotiable:
+          type: boolean
+          description: Indicates whether the price is negotiable
+        metadata:
+          $ref: "#/components/schemas/ListingMetadata"
+      required:
+        - title
+        - price
+
+    ListingOutput:
+      type: object
+      properties:
+        id:
+          type: number
+          description: Unique identifier for the listing
+        title:
+          type: string
+          description: The title or name of the listing
+        mainCategory:
+          type: string
+          description: Main category under which the listing is classified
+        subCategory:
+          type: string
+          description: Sub-category for more specific classification
+        price:
+          type: number
+          format: float
+          description: Price of the item or service
+        priceNegotiable:
+          type: boolean
+          description: Indicates whether the price is negotiable
+        metadata:
+          $ref: "#/components/schemas/ListingMetadata"
+      required:
+        - id
+        - title
+        - price
+        - metadata
+        # You can add or remove other required fields to match your needs

@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  sam-app-ts
+
+Globals:
+  Function:
+    Timeout: 3
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+  ListingService:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambdas/listing-service/
+      Handler: app.lambdaHandler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      # Add environment variables here
+      Environment:
+        Variables:
+          DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres # Example dev URL
+      Events:
+        LS_PostListing:
+          Type: Api
+          Properties:
+            Path: /listings
+            Method: post
+
+        LS_GetListings:
+          Type: Api
+          Properties:
+            Path: /listings
+            Method: get
+
+        LS_GetListingById:
+          Type: Api
+          Properties:
+            Path: /listings/{id}
+            Method: get
+
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+Outputs:
+  HelloWorldApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/
+  HelloWorldFunction:
+    Description: Hello World Lambda Function ARN
+    Value: !GetAtt HelloWorldFunction.Arn
+  HelloWorldFunctionIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !GetAtt HelloWorldFunctionRole.Arn

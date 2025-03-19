@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "drizzle-kit": "^0.30.5",
+    "drizzle-orm": "^0.40.0",
+    "postgres": "^3.4.5"
+  }
+}
