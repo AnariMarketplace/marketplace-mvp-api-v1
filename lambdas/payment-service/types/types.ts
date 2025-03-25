@@ -1,32 +1,29 @@
 import { z } from 'zod';
-import { listingsTable } from '../db/schema';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
 
-export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
+// export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
 
-export type Listing = typeof listingsTable.$inferInsert & {};
+// export type Listing = typeof listingsTable.$inferInsert & {};
 
-export const ListingInputValidationSchema = z.object({
-    title: z.string(),
-    sellerId: z.string().uuid(),
-    purchaseType: z.enum(['BUY', 'RENT']).optional(),
-    price: z.number()
-    // metadata: ListingMetadataInputValidationSchema
-});
+// export const ListingInputValidationSchema = z.object({
+//     title: z.string(),
+//     sellerId: z.string().uuid(),
+//     purchaseType: z.enum(['BUY', 'RENT']).optional(),
+//     price: z.number()
+//     // metadata: ListingMetadataInputValidationSchema
+// });
 
-export interface ListingOutputDto {
-    id: string;
-    title: string;
-    sellerId: string;
-    purchaseType: string;
-    price: number;
-    // metadata: ListingMetadata;
-}
+// export interface PaymentIntentOutputDto {
+//     paymentIntent: string;
+//     ephemeralKey: string;
+//     customerId: string;
+//     publishableKey: string;
+// }
 
 // export type ListingMetadata = z.infer<typeof ListingMetadataInputValidationSchema>;
 
 export interface Route {
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE';
+    method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'OPTIONS';
     path: string;
     handler: (event: APIGatewayProxyEvent, service: any) => Promise<APIGatewayProxyResult>;
 }

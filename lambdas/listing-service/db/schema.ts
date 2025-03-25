@@ -1,12 +1,14 @@
-import { decimal, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
-import { DATABASE_TABLES } from '../types/constants';
+import { DATABASE_TABLES } from '@anarimarketplace/constants';
+import { decimal, pgSchema, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
 
-export const listingsTable = table(DATABASE_TABLES.LISTINGS, {
+export const listingServiceSchema = pgSchema('listing_service');
+export const listingsTable = listingServiceSchema.table('listings', {
     title: varchar().notNull(),
-    sellerId: uuid().notNull(),
-    purchaseType: varchar().default('SALE'),
-    id: uuid('id').defaultRandom(),
-    price: decimal().notNull()
+    sellerId: uuid('seller_id').notNull(),
+    purchaseType: varchar('purchase_type').default('SALE'),
+    id: uuid('id').defaultRandom().primaryKey(),
+    price: decimal().notNull(),
+    condition: varchar()
 });
 
 export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;

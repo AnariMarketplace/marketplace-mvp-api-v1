@@ -9,7 +9,6 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
     // Find the matching route
     const route = routes.find((r) => r.method === event.httpMethod && r.path === event.path);
-
     // If no route is found, return 404
     if (!route) {
         return {

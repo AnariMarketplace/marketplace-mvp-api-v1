@@ -1,0 +1,121 @@
+openapi: 3.0.3
+info:
+  title: Listing Service API Docs
+  version: 1.0.0
+
+paths:
+  /checkout:
+    post:
+      summary: customer creates a checkout, this will calculate all fees and totals and return back to the client
+      operationId: createCheckout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./schemas.yaml#/components/schemas/CheckoutInput"
+            # examples:
+            #   createCheckoutExample:
+            #     summary: Example request body for creating a new listing
+            #     value:
+            #       title: "Antique Vase"
+            #       mainCategory: "Home Decor"
+            #       subCategory: "Vases"
+            #       price: 99.99
+            #       priceNegotiable: true
+            #       metadata:
+            #         color: "blue"
+            #         material: "ceramic"
+            #         size: "medium"
+      responses:
+        "200":
+          description: Successfully created a listing
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/ListingOutput"
+              examples:
+                createListingResponse:
+                  summary: Example response for a created listing
+                  value:
+                    id: 123
+                    title: "Antique Vase"
+                    mainCategory: "Home Decor"
+                    subCategory: "Vases"
+                    price: 99.99
+                    priceNegotiable: true
+                    metadata:
+                      color: "blue"
+                      material: "ceramic"
+                      size: "medium"
+
+    get:
+      summary: Get all listings in the buyer area using buyer coordinates
+      operationId: getListings
+      responses:
+        "200":
+          description: A list of nearby listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./schemas.yaml#/components/schemas/ListingOutput"
+              examples:
+                getListingsExample:
+                  summary: Example response for a list of listings
+                  value:
+                    - id: 123
+                      title: "Antique Vase"
+                      mainCategory: "Home Decor"
+                      subCategory: "Vases"
+                      price: 99.99
+                      priceNegotiable: true
+                      metadata:
+                        color: "blue"
+                        material: "ceramic"
+                        size: "medium"
+                    - id: 456
+                      title: "Modern Lamp"
+                      mainCategory: "Home Decor"
+                      subCategory: "Lighting"
+                      price: 45.50
+                      priceNegotiable: false
+                      metadata:
+                        color: "silver"
+                        material: "steel"
+                        size: "large"
+
+  /listings/{id}:
+    get:
+      summary: Get a listing by ID
+      operationId: getListing
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: UUID of the listing
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: A single listing
+          content:
+            application/json:
+              schema:
+                $ref: "./schemas.yaml#/components/schemas/ListingOutput"
+              examples:
+                getListingExample:
+                  summary: Example response for a single listing
+                  value:
+                    id: 123
+                    title: "Antique Vase"
+                    mainCategory: "Home Decor"
+                    subCategory: "Vases"
+                    price: 99.99
+                    priceNegotiable: true
+                    metadata:
+                      color: "blue"
+                      material: "ceramic"
+                      size: "medium"

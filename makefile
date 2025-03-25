@@ -37,9 +37,11 @@ setup-stripe:
 	stripe listen --events payment_intent.created,customer.created,payment_intent.succeeded,checkout.session.completed,payment_intent.payment_failed \
   --forward-to http://localhost:3000/payment-service/webhook
 # Now combine the tasks for "start-local":
-start-local: sam-build supabase-start drizzle-generate drizzle-migrate connect-stripe setup-stripe
+start-sam:
 	@echo "Starting SAM local API..."
 	sam local start-api
+
+start-local: sam-build supabase-start drizzle-generate drizzle-migrate start-sam 
 
 stop-local:
 	@echo "Stopping Supabase..."

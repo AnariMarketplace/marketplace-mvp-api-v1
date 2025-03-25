@@ -1,11 +1,16 @@
-import { decimal, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
+import { decimal, pgSchema, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
 import { DATABASE_TABLES } from '../types/constants';
+export const paymentSchema = pgSchema('payment_service');
 
-export const listingsTable = table(DATABASE_TABLES.LISTINGS, {
-    providerPaymentId: varchar(),
-    paymentMethod: varchar(),
+export const transactionTable = paymentSchema.table('transactions', {
+    paymentSystemTransactionId: varchar('payment_system_transaction_id'),
+    paymentMethod: varchar('payment_method'),
     id: uuid('id').defaultRandom(),
-    price: decimal().notNull()
+    amount: decimal('amount').notNull(),
+    currency: varchar('currency').default('USD'),
+    status: varchar('status'),
+    customerId: varchar('customer_id'),
+    listingId: varchar('listing_id')
 });
 
-export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;
+export type TransactionTableSelectSchema = typeof transactionTable.$inferSelect;
