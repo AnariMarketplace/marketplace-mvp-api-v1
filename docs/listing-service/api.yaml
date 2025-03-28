@@ -393,7 +393,7 @@ components:
       example:
         title: "Wireless Bluetooth Headphones"
         type: "SALE"
-        sellerId: "seller_002"
+        sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
         price: 199.99
         description: "High quality wireless Bluetooth headphones with noise cancellation."
         photo_urls:
