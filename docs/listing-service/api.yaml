@@ -1,140 +1,167 @@
 openapi: 3.0.3
 info:
-  title: Listing Service API Docs
-  version: 1.0.0
-
+  title: Listing Service API
+  version: "1.0.0"
 paths:
   /listings:
+    get:
+      summary: Retrieve a list of listings
+      responses:
+        "200":
+          description: A JSON array of listing objects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Listing"
     post:
-      summary: Seller creates a new Listing
-      operationId: createListing
+      summary: Create a new listing
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: "#/components/schemas/ListingInput"
-            examples:
-              createListingExample:
-                summary: Example request body for creating a new listing
-                value:
-                  title: "Antique Vase"
-                  mainCategory: "Home Decor"
-                  subCategory: "Vases"
-                  price: 99.99
-                  priceNegotiable: true
-                  metadata:
-                    color: "blue"
-                    material: "ceramic"
-                    size: "medium"
       responses:
-        "200":
-          description: Successfully created a listing
+        "201":
+          description: Listing created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListingOutput"
-              examples:
-                createListingResponse:
-                  summary: Example response for a created listing
-                  value:
-                    id: 123
-                    title: "Antique Vase"
-                    mainCategory: "Home Decor"
-                    subCategory: "Vases"
-                    price: 99.99
-                    priceNegotiable: true
-                    metadata:
-                      color: "blue"
-                      material: "ceramic"
-                      size: "medium"
-
-    get:
-      summary: Get all listings in the buyer area using buyer coordinates
-      operationId: getListings
-      responses:
-        "200":
-          description: A list of nearby listings
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/ListingOutput"
-              examples:
-                getListingsExample:
-                  summary: Example response for a list of listings
-                  value:
-                    - id: 123
-                      title: "Antique Vase"
-                      mainCategory: "Home Decor"
-                      subCategory: "Vases"
-                      price: 99.99
-                      priceNegotiable: true
-                      metadata:
-                        color: "blue"
-                        material: "ceramic"
-                        size: "medium"
-                    - id: 456
-                      title: "Modern Lamp"
-                      mainCategory: "Home Decor"
-                      subCategory: "Lighting"
-                      price: 45.50
-                      priceNegotiable: false
-                      metadata:
-                        color: "silver"
-                        material: "steel"
-                        size: "large"
-
+                $ref: "#/components/schemas/Listing"
   /listings/{id}:
     get:
-      summary: Get a listing by ID
-      operationId: getListing
+      summary: Retrieve a specific listing by ID
       parameters:
         - in: path
           name: id
           required: true
-          description: UUID of the listing
           schema:
             type: string
             format: uuid
       responses:
         "200":
-          description: A single listing
+          description: A listing object
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListingOutput"
-              examples:
-                getListingExample:
-                  summary: Example response for a single listing
-                  value:
-                    id: 123
-                    title: "Antique Vase"
-                    mainCategory: "Home Decor"
-                    subCategory: "Vases"
-                    price: 99.99
-                    priceNegotiable: true
-                    metadata:
-                      color: "blue"
-                      material: "ceramic"
-                      size: "medium"
+                $ref: "#/components/schemas/Listing"
+    put:
+      summary: Update an existing listing
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingInput"
+      responses:
+        "200":
+          description: Listing updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Listing"
+    delete:
+      summary: Delete a listing
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Listing deleted successfully
 components:
   schemas:
+    Listing:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the listing
+        title:
+          type: string
+          description: Title or name of the listing
+        type:
+          type: string
+          enum:
+            - SALE
+            - RENT
+          description: The type of listing (SALE or RENT)
+        sellerId:
+          type: string
+          description: Foreign key reference to the seller
+        price:
+          type: number
+          format: float
+          description: Price of the item or service
+        description:
+          type: string
+          description: Detailed description of the listing
+        photo_urls:
+          type: array
+          items:
+            type: string
+          description: Array of photo URLs for the listing
+        condition:
+          type: string
+          enum:
+            - NEW
+            - GREAT
+            - GOOD
+            - FAIR
+          description: Condition of the item
+        specs:
+          $ref: "#/components/schemas/ListingMetadata"
+          description: Specifications or metadata for the listing
+        availableQty:
+          type: integer
+          description: Quantity available
+        category:
+          type: string
+          description: Main category under which the listing is classified
+        subCategory:
+          type: string
+          description: More specific classification within the category
+        priceNegotiable:
+          type: boolean
+          description: Indicates whether the price is negotiable
+        isFragile:
+          type: boolean
+          description: Indicates whether the item is fragile
+      required:
+        - id
+        - title
+        - type
+        - sellerId
+        - price
     ListingMetadata:
       type: object
       properties:
         color:
           type: string
+          description: Color of the item
         material:
           type: string
+          description: Material of the item
         size:
           type: string
+          description: Size or dimensions of the item
       required:
         - color
         - material
         - size
-
     ListingInput:
       type: object
       properties:
@@ -156,37 +183,7 @@ components:
           description: Indicates whether the price is negotiable
         metadata:
           $ref: "#/components/schemas/ListingMetadata"
+          description: Metadata details for the listing
       required:
         - title
         - price
-
-    ListingOutput:
-      type: object
-      properties:
-        id:
-          type: number
-          description: Unique identifier for the listing
-        title:
-          type: string
-          description: The title or name of the listing
-        mainCategory:
-          type: string
-          description: Main category under which the listing is classified
-        subCategory:
-          type: string
-          description: Sub-category for more specific classification
-        price:
-          type: number
-          format: float
-          description: Price of the item or service
-        priceNegotiable:
-          type: boolean
-          description: Indicates whether the price is negotiable
-        metadata:
-          $ref: "#/components/schemas/ListingMetadata"
-      required:
-        - id
-        - title
-        - price
-        - metadata
-        # You can add or remove other required fields to match your needs
