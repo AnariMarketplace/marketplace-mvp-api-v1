@@ -14,7 +14,7 @@ import { sql } from 'drizzle-orm';
 
 export const orderSchema = pgSchema('order_service');
 
-export const checkoutRequestTable = orderSchema.table('checkout-requests', {
+export const checkoutRequestTable = orderSchema.table('checkout', {
     id: uuid('id').defaultRandom().primaryKey(),
     userId: uuid('user_id'),
     lineItems: jsonb('line_items').notNull(),

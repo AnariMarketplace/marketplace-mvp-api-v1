@@ -80,6 +80,7 @@ EntryPoints = ["app.ts"]
 
 
 
+
 [function_build_definitions.4d61b59d-8dde-4c03-91f8-857787d3b327]
 codeuri = "/Users/dariusdeah/source/startup-v2/anari-2025-mvp/server/lambdas/payment-service"
 runtime = "nodejs20.x"
@@ -97,6 +98,7 @@ Minify = true
 Target = "es2020"
 Sourcemap = true
 EntryPoints = ["app.ts"]
+
 
 
 
@@ -179,6 +181,7 @@ EntryPoints = ["app.ts"]
 
 
 
+
 [function_build_definitions.ae9b9e9e-b59a-4aa6-8959-20cdfa855ef1]
 codeuri = "/Users/dariusdeah/source/startup-v2/anari-2025-mvp/server/lambdas/order-service"
 runtime = "nodejs20.x"
@@ -196,6 +199,7 @@ Minify = true
 Target = "es2020"
 Sourcemap = true
 EntryPoints = ["app.ts"]
+
 
 
 

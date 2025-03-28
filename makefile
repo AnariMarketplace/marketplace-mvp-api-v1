@@ -41,8 +41,13 @@ start-sam:
 	@echo "Starting SAM local API..."
 	sam local start-api
 
-start-local: sam-build supabase-start drizzle-generate drizzle-migrate start-sam 
+start-localstack: 
+	# localstack auth set-token ls-KijAlAfo-9192-suje-4729-SoPiGAkU7da5;
+	localstack start -d
+	# awslocal sam local start-api
 
+start-local-sam: sam-build supabase-start drizzle-generate drizzle-migrate start-sam 
+start-local: start-localstack
 stop-local:
 	@echo "Stopping Supabase..."
 	supabase stop --no-backup
