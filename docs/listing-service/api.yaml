@@ -30,7 +30,7 @@ paths:
                 - id: "123e4567-e89b-12d3-a456-426614174010"
                   title: "Wireless Bluetooth Headphones"
                   type: "SALE"
-                  sellerId: "seller_002"
+                  sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
                   price: 199.99
                   description: "High quality wireless Bluetooth headphones with noise cancellation."
                   photo_urls:
@@ -61,7 +61,7 @@ paths:
             example:
               title: "Wireless Bluetooth Headphones"
               type: "SALE"
-              sellerId: "seller_002"
+              sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
               price: 199.99
               description: "High quality wireless Bluetooth headphones with noise cancellation."
               photo_urls:
@@ -87,7 +87,7 @@ paths:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones"
                 type: "SALE"
-                sellerId: "seller_002"
+                sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
                 price: 199.99
                 description: "High quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
@@ -130,7 +130,7 @@ paths:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones"
                 type: "SALE"
-                sellerId: "seller_002"
+                sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
                 price: 199.99
                 description: "High quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
@@ -161,7 +161,7 @@ paths:
             example:
               title: "Wireless Bluetooth Headphones - Discounted"
               type: "SALE"
-              sellerId: "seller_002"
+              sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
               price: 179.99
               description: "Discounted price on high quality wireless Bluetooth headphones with noise cancellation."
               photo_urls:
@@ -187,7 +187,7 @@ paths:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones - Discounted"
                 type: "SALE"
-                sellerId: "seller_002"
+                sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
                 price: 179.99
                 description: "Discounted price on high quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
@@ -286,7 +286,7 @@ components:
         id: "123e4567-e89b-12d3-a456-426614174010"
         title: "Wireless Bluetooth Headphones"
         type: "SALE"
-        sellerId: "seller_002"
+        sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
         price: 199.99
         description: "High quality wireless Bluetooth headphones with noise cancellation."
         photo_urls:
