@@ -2,13 +2,13 @@ openapi: 3.0.3
 info:
   title: Listing Service API
   version: "1.0.0"
-  description: A RESTful API for managing listings in the listing service.
+  description: A RESTful API for managing product listings in the listing service.
 servers:
   - url: https://api.example.com/v1
     description: Production server (replace with your actual server)
 tags:
   - name: Listings
-    description: Operations related to listings
+    description: Operations related to product listings
 
 paths:
   /listings:
@@ -16,10 +16,10 @@ paths:
       tags:
         - Listings
       summary: Retrieve all listings
-      description: Retrieve a list of all available listings.
+      description: Retrieve a list of all available product listings.
       responses:
         "200":
-          description: A JSON array of listing objects.
+          description: A JSON array of product listing objects.
           content:
             application/json:
               schema:
@@ -27,22 +27,22 @@ paths:
                 items:
                   $ref: "#/components/schemas/Listing"
               example:
-                - id: "123e4567-e89b-12d3-a456-426614174001"
-                  title: "Charming Family Home for Sale"
+                - id: "123e4567-e89b-12d3-a456-426614174010"
+                  title: "Wireless Bluetooth Headphones"
                   type: "SALE"
                   sellerId: "seller_002"
-                  price: 350000.00
-                  description: "A beautifully maintained home in a quiet suburban neighborhood."
+                  price: 199.99
+                  description: "High quality wireless Bluetooth headphones with noise cancellation."
                   photo_urls:
-                    - "https://example.com/photos/house1.jpg"
-                  condition: "GOOD"
+                    - "https://example.com/photos/headphones1.jpg"
+                  condition: "NEW"
                   specs:
-                    color: "Blue"
-                    material: "Brick"
-                    size: "2500 sqft"
-                  availableQty: 1
-                  category: "Real Estate"
-                  subCategory: "House"
+                    color: "Black"
+                    material: "Plastic"
+                    size: "Standard"
+                  availableQty: 50
+                  category: "Electronics"
+                  subCategory: "Audio"
                   priceNegotiable: false
                   isFragile: false
         "500":
@@ -51,7 +51,7 @@ paths:
       tags:
         - Listings
       summary: Create a new listing
-      description: Create a new listing with the provided details.
+      description: Create a new product listing with the provided details.
       requestBody:
         required: true
         content:
@@ -59,21 +59,21 @@ paths:
             schema:
               $ref: "#/components/schemas/ListingInput"
             example:
-              title: "Charming Family Home for Sale"
+              title: "Wireless Bluetooth Headphones"
               type: "SALE"
               sellerId: "seller_002"
-              price: 350000.00
-              description: "A beautifully maintained home in a quiet suburban neighborhood."
+              price: 199.99
+              description: "High quality wireless Bluetooth headphones with noise cancellation."
               photo_urls:
-                - "https://example.com/photos/house1.jpg"
-              condition: "GOOD"
+                - "https://example.com/photos/headphones1.jpg"
+              condition: "NEW"
               specs:
-                color: "Blue"
-                material: "Brick"
-                size: "2500 sqft"
-              availableQty: 1
-              category: "Real Estate"
-              subCategory: "House"
+                color: "Black"
+                material: "Plastic"
+                size: "Standard"
+              availableQty: 50
+              category: "Electronics"
+              subCategory: "Audio"
               priceNegotiable: false
               isFragile: false
       responses:
@@ -84,22 +84,22 @@ paths:
               schema:
                 $ref: "#/components/schemas/Listing"
               example:
-                id: "123e4567-e89b-12d3-a456-426614174001"
-                title: "Charming Family Home for Sale"
+                id: "123e4567-e89b-12d3-a456-426614174010"
+                title: "Wireless Bluetooth Headphones"
                 type: "SALE"
                 sellerId: "seller_002"
-                price: 350000.00
-                description: "A beautifully maintained home in a quiet suburban neighborhood."
+                price: 199.99
+                description: "High quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
-                  - "https://example.com/photos/house1.jpg"
-                condition: "GOOD"
+                  - "https://example.com/photos/headphones1.jpg"
+                condition: "NEW"
                 specs:
-                  color: "Blue"
-                  material: "Brick"
-                  size: "2500 sqft"
-                availableQty: 1
-                category: "Real Estate"
-                subCategory: "House"
+                  color: "Black"
+                  material: "Plastic"
+                  size: "Standard"
+                availableQty: 50
+                category: "Electronics"
+                subCategory: "Audio"
                 priceNegotiable: false
                 isFragile: false
         "400":
@@ -110,7 +110,7 @@ paths:
       - in: path
         name: id
         required: true
-        description: The unique identifier of the listing.
+        description: The unique identifier of the product listing.
         schema:
           type: string
           format: uuid
@@ -118,7 +118,7 @@ paths:
       tags:
         - Listings
       summary: Retrieve a specific listing
-      description: Retrieve details of a listing by its unique ID.
+      description: Retrieve details of a product listing by its unique ID.
       responses:
         "200":
           description: Listing details retrieved successfully.
@@ -127,22 +127,22 @@ paths:
               schema:
                 $ref: "#/components/schemas/Listing"
               example:
-                id: "123e4567-e89b-12d3-a456-426614174001"
-                title: "Charming Family Home for Sale"
+                id: "123e4567-e89b-12d3-a456-426614174010"
+                title: "Wireless Bluetooth Headphones"
                 type: "SALE"
                 sellerId: "seller_002"
-                price: 350000.00
-                description: "A beautifully maintained home in a quiet suburban neighborhood."
+                price: 199.99
+                description: "High quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
-                  - "https://example.com/photos/house1.jpg"
-                condition: "GOOD"
+                  - "https://example.com/photos/headphones1.jpg"
+                condition: "NEW"
                 specs:
-                  color: "Blue"
-                  material: "Brick"
-                  size: "2500 sqft"
-                availableQty: 1
-                category: "Real Estate"
-                subCategory: "House"
+                  color: "Black"
+                  material: "Plastic"
+                  size: "Standard"
+                availableQty: 50
+                category: "Electronics"
+                subCategory: "Audio"
                 priceNegotiable: false
                 isFragile: false
         "404":
@@ -151,7 +151,7 @@ paths:
       tags:
         - Listings
       summary: Update a listing
-      description: Update the details of an existing listing.
+      description: Update the details of an existing product listing.
       requestBody:
         required: true
         content:
@@ -159,21 +159,21 @@ paths:
             schema:
               $ref: "#/components/schemas/ListingInput"
             example:
-              title: "Charming Family Home for Sale - Price Reduced"
+              title: "Wireless Bluetooth Headphones - Discounted"
               type: "SALE"
               sellerId: "seller_002"
-              price: 345000.00
-              description: "Updated price for a beautifully maintained home in a quiet suburban neighborhood."
+              price: 179.99
+              description: "Discounted price on high quality wireless Bluetooth headphones with noise cancellation."
               photo_urls:
-                - "https://example.com/photos/house1_updated.jpg"
-              condition: "GOOD"
+                - "https://example.com/photos/headphones1_discount.jpg"
+              condition: "NEW"
               specs:
-                color: "Blue"
-                material: "Brick"
-                size: "2500 sqft"
-              availableQty: 1
-              category: "Real Estate"
-              subCategory: "House"
+                color: "Black"
+                material: "Plastic"
+                size: "Standard"
+              availableQty: 45
+              category: "Electronics"
+              subCategory: "Audio"
               priceNegotiable: false
               isFragile: false
       responses:
@@ -184,22 +184,22 @@ paths:
               schema:
                 $ref: "#/components/schemas/Listing"
               example:
-                id: "123e4567-e89b-12d3-a456-426614174001"
-                title: "Charming Family Home for Sale - Price Reduced"
+                id: "123e4567-e89b-12d3-a456-426614174010"
+                title: "Wireless Bluetooth Headphones - Discounted"
                 type: "SALE"
                 sellerId: "seller_002"
-                price: 345000.00
-                description: "Updated price for a beautifully maintained home in a quiet suburban neighborhood."
+                price: 179.99
+                description: "Discounted price on high quality wireless Bluetooth headphones with noise cancellation."
                 photo_urls:
-                  - "https://example.com/photos/house1_updated.jpg"
-                condition: "GOOD"
+                  - "https://example.com/photos/headphones1_discount.jpg"
+                condition: "NEW"
                 specs:
-                  color: "Blue"
-                  material: "Brick"
-                  size: "2500 sqft"
-                availableQty: 1
-                category: "Real Estate"
-                subCategory: "House"
+                  color: "Black"
+                  material: "Plastic"
+                  size: "Standard"
+                availableQty: 45
+                category: "Electronics"
+                subCategory: "Audio"
                 priceNegotiable: false
                 isFragile: false
         "400":
@@ -210,7 +210,7 @@ paths:
       tags:
         - Listings
       summary: Delete a listing
-      description: Delete a listing by its unique ID.
+      description: Delete a product listing by its unique ID.
       responses:
         "204":
           description: Listing deleted successfully.
@@ -225,10 +225,10 @@ components:
         id:
           type: string
           format: uuid
-          description: Unique identifier for the listing.
+          description: Unique identifier for the product listing.
         title:
           type: string
-          description: Title or name of the listing.
+          description: Title or name of the product listing.
         type:
           type: string
           enum:
@@ -241,15 +241,15 @@ components:
         price:
           type: number
           format: float
-          description: Price of the item or service.
+          description: Price of the product.
         description:
           type: string
-          description: Detailed description of the listing.
+          description: Detailed description of the product listing.
         photo_urls:
           type: array
           items:
             type: string
-          description: Array of photo URLs for the listing.
+          description: Array of photo URLs for the product.
         condition:
           type: string
           enum:
@@ -257,16 +257,16 @@ components:
             - GREAT
             - GOOD
             - FAIR
-          description: Condition of the item.
+          description: Condition of the product.
         specs:
           $ref: "#/components/schemas/ListingMetadata"
-          description: Specifications or metadata for the listing.
+          description: Specifications or metadata for the product.
         availableQty:
           type: integer
           description: Quantity available.
         category:
           type: string
-          description: Main category under which the listing is classified.
+          description: Main category under which the product is classified.
         subCategory:
           type: string
           description: More specific classification within the category.
@@ -275,7 +275,7 @@ components:
           description: Indicates whether the price is negotiable.
         isFragile:
           type: boolean
-          description: Indicates whether the item is fragile.
+          description: Indicates whether the product is fragile.
       required:
         - id
         - title
@@ -283,22 +283,22 @@ components:
         - sellerId
         - price
       example:
-        id: "123e4567-e89b-12d3-a456-426614174001"
-        title: "Charming Family Home for Sale"
+        id: "123e4567-e89b-12d3-a456-426614174010"
+        title: "Wireless Bluetooth Headphones"
         type: "SALE"
         sellerId: "seller_002"
-        price: 350000.00
-        description: "A beautifully maintained home in a quiet suburban neighborhood."
+        price: 199.99
+        description: "High quality wireless Bluetooth headphones with noise cancellation."
         photo_urls:
-          - "https://example.com/photos/house1.jpg"
-        condition: "GOOD"
+          - "https://example.com/photos/headphones1.jpg"
+        condition: "NEW"
         specs:
-          color: "Blue"
-          material: "Brick"
-          size: "2500 sqft"
-        availableQty: 1
-        category: "Real Estate"
-        subCategory: "House"
+          color: "Black"
+          material: "Plastic"
+          size: "Standard"
+        availableQty: 50
+        category: "Electronics"
+        subCategory: "Audio"
         priceNegotiable: false
         isFragile: false
 
@@ -307,28 +307,28 @@ components:
       properties:
         color:
           type: string
-          description: Color of the item.
+          description: Color of the product.
         material:
           type: string
-          description: Material of the item.
+          description: Material of the product.
         size:
           type: string
-          description: Size or dimensions of the item.
+          description: Size or dimensions of the product.
       required:
         - color
         - material
         - size
       example:
-        color: "Blue"
-        material: "Brick"
-        size: "2500 sqft"
+        color: "Black"
+        material: "Plastic"
+        size: "Standard"
 
     ListingInput:
       type: object
       properties:
         title:
           type: string
-          description: Title or name of the listing.
+          description: Title or name of the product listing.
         type:
           type: string
           enum:
@@ -342,15 +342,15 @@ components:
         price:
           type: number
           format: float
-          description: Price of the item or service.
+          description: Price of the product.
         description:
           type: string
-          description: Detailed description of the listing.
+          description: Detailed description of the product listing.
         photo_urls:
           type: array
           items:
             type: string
-          description: Array of photo URLs for the listing.
+          description: Array of photo URLs for the product.
         condition:
           type: string
           enum:
@@ -358,16 +358,16 @@ components:
             - GREAT
             - GOOD
             - FAIR
-          description: Condition of the item.
+          description: Condition of the product.
         specs:
           $ref: "#/components/schemas/ListingMetadata"
-          description: Specifications or metadata for the listing.
+          description: Specifications or metadata for the product.
         availableQty:
           type: integer
           description: Quantity available.
         category:
           type: string
-          description: Main category under which the listing is classified.
+          description: Main category under which the product is classified.
         subCategory:
           type: string
           description: More specific classification within the category.
@@ -377,7 +377,7 @@ components:
           default: false
         isFragile:
           type: boolean
-          description: Indicates whether the item is fragile.
+          description: Indicates whether the product is fragile.
           default: false
       required:
         - title
@@ -391,20 +391,20 @@ components:
         - condition
         - availableQty
       example:
-        title: "Charming Family Home for Sale"
+        title: "Wireless Bluetooth Headphones"
         type: "SALE"
         sellerId: "seller_002"
-        price: 350000.00
-        description: "A beautifully maintained home in a quiet suburban neighborhood."
+        price: 199.99
+        description: "High quality wireless Bluetooth headphones with noise cancellation."
         photo_urls:
-          - "https://example.com/photos/house1.jpg"
-        condition: "GOOD"
+          - "https://example.com/photos/headphones1.jpg"
+        condition: "NEW"
         specs:
-          color: "Blue"
-          material: "Brick"
-          size: "2500 sqft"
-        availableQty: 1
-        category: "Real Estate"
-        subCategory: "House"
+          color: "Black"
+          material: "Plastic"
+          size: "Standard"
+        availableQty: 50
+        category: "Electronics"
+        subCategory: "Audio"
         priceNegotiable: false
         isFragile: false
