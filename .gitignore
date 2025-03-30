@@ -1,5 +1,11 @@
-node_modules
-drizzle
-package-lock.json
-.serverless
-events
+# Ignore Node dependencies
+node_modules/
+
+
+# Ignore Serverless build artifacts
+.serverless/
+
+# Ignore the "events" directory if it holds test data or local-only artifacts
+events/
+
+supabase/

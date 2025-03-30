@@ -35,7 +35,7 @@ export const createPricingRequestHandler = async (
                 pricingRequestId: '7c8b649c-f967-4216-96ed-cb23dbcdd426',
                 category: 'ANARI XL',
                 travelTime: '25 mins',
-                travelDistance: '15 mi',
+                travelDistance: 'test milessssssss',
                 estimatedDeliveryTime: '45 mins',
                 feeBreakdown: {
                     total: 10.5,
