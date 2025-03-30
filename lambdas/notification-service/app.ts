@@ -1,33 +1,23 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { SQSEvent } from 'aws-lambda';
 import { initServer } from './server';
 
-const { routes, service } = initServer();
+const { service } = initServer();
 
-export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    // Log the incoming request method/path
-    console.log('Incoming request:', event.httpMethod, event.path);
+export const lambdaHandler = async (event: SQSEvent): Promise<void> => {
+    console.log('Received SQS event with records:', event.Records.length);
 
-    // Find the matching route
-    const route = routes.find((r) => r.method === event.httpMethod && r.path === event.path);
+    for (const record of event.Records) {
+        try {
+            console.log('Processing SQS record:', record.messageId);
+            // Parse the record body if it's JSON
+            const payload = JSON.parse(record.body);
+            console.log('Record payload:', JSON.parse(payload.Message));
 
-    // If no route is found, return 404
-    if (!route) {
-        return {
-            statusCode: 404,
-            body: JSON.stringify({ error: 'Route not found' })
-        };
-    }
-
-    try {
-        // Delegate handling to the matched route
-        return await route.handler(event, service);
-    } catch (err: any) {
-        // Log and return the error
-        console.error('Error handling request:', err);
-
-        return {
-            statusCode: err.statusCode ?? 500,
-            body: err?.errors ? JSON.stringify(err.errors) : 'Internal Server Error'
-        };
+            // Insert your SQS processing logic here.
+            // For example: await processSQSRecord(payload, service);
+        } catch (err: any) {
+            console.error('Error processing SQS record:', record.messageId, err);
+            // Optionally, handle error (e.g., log to monitoring, rethrow for retry)
+        }
     }
 };

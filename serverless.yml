@@ -1,0 +1,259 @@
+service: anar-server
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-west-2
+  # Dynamically use either 'local' or 'production'
+  stage: ${opt:stage, 'local'}
+
+  environment:
+    # Pick the DATABASE_URL (or other env vars) from the custom.env based on current stage
+    DATABASE_URL: ${self:custom.env.${self:provider.stage}.DATABASE_URL, ''}
+
+  logs:
+    restApi: true
+  apiGateway:
+    cloudWatchRole: false
+
+# Only load LocalStack for the local stage
+plugins:
+  - serverless-localstack
+
+custom:
+  # Configure localstack to run only for stages: [local]
+  localstack:
+    debug: true
+    stages:
+      - local
+    host: http://localhost
+    edgePort: 4566
+    autostart: true
+    region: us-west-2
+
+  # Define separate environment variables for local vs production
+  env:
+    local:
+      DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+    production:
+      DATABASE_URL: postgres://aws-user:aws-pass@your-prod-rds.amazonaws.com:5432/proddb
+      # any other variables you need for production?
+
+functions:
+  listingService:
+    handler: lambdas/listing-service/app.lambdaHandler
+    events:
+      - http:
+          path: listings
+          method: post
+      - http:
+          path: listings
+          method: get
+      - http:
+          path: listings/{id}
+          method: get
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - ListingServiceQueue
+              - Arn
+
+  paymentService:
+    handler: lambdas/payment-service/app.lambdaHandler
+    events:
+      - http:
+          path: start-payment-intent
+          method: post
+      - http:
+          path: payment-service/webhook
+          method: post
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - PaymentServiceQueue
+              - Arn
+
+  deliveryService:
+    handler: lambdas/delivery-service/app.lambdaHandler
+    events:
+      - http:
+          path: pricing-requests
+          method: post
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - DeliveryServiceQueue
+              - Arn
+
+  orderService:
+    handler: lambdas/order-service/app.lambdaHandler
+    events:
+      - http:
+          path: checkout
+          method: get
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - OrderServiceQueue
+              - Arn
+
+  notificationService:
+    handler: lambdas/notification-service/app.lambdaHandler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - NotificationServiceQueue
+              - Arn
+
+resources:
+  Resources:
+    FanoutTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: FanoutTopic
+
+    ListingServiceQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ListingServiceQueue
+
+    PaymentServiceQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: PaymentServiceQueue
+
+    DeliveryServiceQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: DeliveryServiceQueue
+
+    OrderServiceQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: OrderServiceQueue
+
+    NotificationServiceQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: NotificationServiceQueue
+
+    ListingServiceQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: ListingServiceQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSMessages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:SendMessage
+              Resource: !GetAtt ListingServiceQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref FanoutTopic
+
+    PaymentServiceQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: PaymentServiceQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSMessages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:SendMessage
+              Resource: !GetAtt PaymentServiceQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref FanoutTopic
+
+    DeliveryServiceQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: DeliveryServiceQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSMessages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:SendMessage
+              Resource: !GetAtt DeliveryServiceQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref FanoutTopic
+
+    OrderServiceQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: OrderServiceQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSMessages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:SendMessage
+              Resource: !GetAtt OrderServiceQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref FanoutTopic
+
+    NotificationServiceQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: NotificationServiceQueue
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: AllowSNSMessages
+              Effect: Allow
+              Principal: "*"
+              Action: sqs:SendMessage
+              Resource: !GetAtt NotificationServiceQueue.Arn
+              Condition:
+                ArnEquals:
+                  aws:SourceArn: !Ref FanoutTopic
+
+    ListingServiceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !GetAtt ListingServiceQueue.Arn
+        Protocol: sqs
+        TopicArn: !Ref FanoutTopic
+
+    PaymentServiceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !GetAtt PaymentServiceQueue.Arn
+        Protocol: sqs
+        TopicArn: !Ref FanoutTopic
+
+    DeliveryServiceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !GetAtt DeliveryServiceQueue.Arn
+        Protocol: sqs
+        TopicArn: !Ref FanoutTopic
+
+    OrderServiceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !GetAtt OrderServiceQueue.Arn
+        Protocol: sqs
+        TopicArn: !Ref FanoutTopic
+
+    NotificationServiceSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Endpoint: !GetAtt NotificationServiceQueue.Arn
+        Protocol: sqs
+        TopicArn: !Ref FanoutTopic

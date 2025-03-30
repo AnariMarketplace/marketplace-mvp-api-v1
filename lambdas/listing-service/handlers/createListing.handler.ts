@@ -5,10 +5,12 @@ import { POJO } from '../types/constants';
 import { ListingService } from '../service/listing.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
+import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
 
 export const createListingHandler = async (
     event: APIGatewayProxyEvent,
-    service: ListingService
+    service: ListingService,
+    snsClient: SNSClient
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
@@ -27,6 +29,13 @@ export const createListingHandler = async (
             createdListing,
             POJO.LISTING,
             POJO.LISTING_OUTPUT_DTO
+        );
+
+        await snsClient.send(
+            new PublishCommand({
+                Message: JSON.stringify(responseDto),
+                TopicArn: 'arn:aws:sns:us-west-2:000000000000:FanoutTopic'
+            })
         );
 
         return {

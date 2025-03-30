@@ -12,13 +12,13 @@ export function initServer() {
     const dbConn = drizzle({ client, casing: 'snake_case' });
     const service = new ListingService(dbConn, mapper);
 
-    const routes: Route[] = [
-        { method: 'POST', path: '/listings', handler: createListingHandler },
-        { method: 'GET', path: '/listings', handler: getListingHandler }
-    ];
+    // const routes: Route[] = [
+    //     { method: 'POST', path: '/listings', handler: createListingHandler },
+    //     { method: 'GET', path: '/listings', handler: getListingHandler }
+    // ];
 
     return {
-        service,
-        routes
+        service
+        // routes
     };
 }

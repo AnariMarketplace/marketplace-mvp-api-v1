@@ -1,6 +1,14 @@
 # Make sure these targets don't conflict with any files named the same.
 .PHONY: help start-local stop-local sam-build supabase-start drizzle-generate drizzle-migrate
 
+RED    := \033[31m
+GREEN  := \033[32m
+YELLOW := \033[33m
+BLUE   := \033[34m
+MAGENTA:= \033[35m
+CYAN   := \033[36m
+WHITE  := \033[37m
+RESET  := \033[0m
 # A "help" target is often handy so team members can quickly see the available targets.
 help:
 	@echo "Available targets:"
@@ -14,7 +22,7 @@ help:
 # Break down your larger operations into smaller tasks:
 sam-build:
 	@echo "Building SAM..."
-	sam build
+	samlocal build
 
 supabase-start:
 	@echo "Starting Supabase..."
@@ -39,15 +47,70 @@ setup-stripe:
 # Now combine the tasks for "start-local":
 start-sam:
 	@echo "Starting SAM local API..."
-	sam local start-api
+	sam  start-api
 
 start-localstack: 
 	# localstack auth set-token ls-KijAlAfo-9192-suje-4729-SoPiGAkU7da5;
-	localstack start -d
-	# awslocal sam local start-api
+	docker run -d --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack
+	samlocal local start-api
+
+sam-local-stack:
+	samlocal local start-api
 
 start-local-sam: sam-build supabase-start drizzle-generate drizzle-migrate start-sam 
-start-local: start-localstack
+start-local: sam-build supabase-start sam-local-stack
+start-local-full: sam-build supabase-start drizzle-generate drizzle-migrate sam-local-stack
+
+local-deploy:
+	serverless deploy --stage local --region us-west-2 --config serverless.yaml
+prod-deploy:
+	serverless deploy --stage production --region us-west-2
 stop-local:
 	@echo "Stopping Supabase..."
 	supabase stop --no-backup
+
+serv-local:
+	serverless deploy --stage local --region us-west-2
+
+serv-prod:
+	serverless deploy --stage production --region us-west-2
+
+
+
+
+
+open-browser:
+	@if [ "$$(uname)" = "Darwin" ]; then \
+	  echo "Detected macOS. Opening supabase studio..."; \
+	  open "http://localhost:54323/"; \
+	elif [ "$$(uname)" = "Linux" ]; then \
+	  echo "Detected Linux. Opening supabase studio..."; \
+	  xdg-open "http://localhost:54323/"; \
+	else \
+	  echo "Unsupported OS. Please open http://localhost:54323/ manually."; \
+	fi
+
+
+
+
+init-locals:
+	@echo "$(BLUE)Initializing local services🛠️...$(RESET)"
+	@echo "$(MAGENTA)starting localstack container...$(RESET)"
+	docker run -d --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack;
+	@echo "$(GREEN)localstack container started...$(RESET)"
+	@echo "$(MAGENTA)Deploying cloud infrastructure locally...$(RESET)"
+	serverless deploy --stage local --region us-west-2;
+	@echo "$(GREEN)localstack container started...$(RESET)"
+	@echo "$(MAGENTA)Starting local database...$(RESET)"
+	npx supabase start;
+	@echo "$(GREEN)Database locally running...$(RESET)"
+	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
+	npx drizzle-kit generate --config=drizzle.dev.config.ts
+	npx drizzle-kit migrate --config=drizzle.dev.config.ts
+	@echo "$(GREEN)Migration complete...$(RESET)"
+# 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
+# 	stripe listen --events payment_intent.created,customer.created,payment_intent.succeeded,checkout.session.completed,payment_intent.payment_failed \
+#   --forward-to http://localhost:3000/payment-service/webhook
+	@echa "Database Studio @$(BLUE)http://localhost:54323/$(RESET)"
+	@echo "$(GREEN)All services deployed successfully🚀...$(RESET)"
+

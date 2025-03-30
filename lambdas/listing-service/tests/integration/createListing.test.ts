@@ -4,7 +4,7 @@ import { describe, it, expect } from '@jest/globals';
 import { Listing, ListingInputDto } from '../../types/types';
 describe('Integration: POST/listings', () => {
     // Adjust baseUrl if your SAM local server is running on a different port
-    const baseUrl = 'http://127.0.0.1:3000';
+    const baseUrl = 'http://127.0.0.1:4566/restapis/92roj6mmmf/local/_user_request_';
 
     it('should create a listing and return 201', async () => {
         // Example request body – only include fields your Lambda actually needs/uses
