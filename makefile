@@ -77,6 +77,9 @@ serv-local:
 serv-prod:
 	serverless deploy --stage production --region us-west-2
 
+serv-dev:
+	serverless deploy --stage dev --region us-west-2
+
 stripe-docker-cli:
 	docker run --rm -it stripe/stripe-cli listen \
     --api-key rk_test_51QiMYvGUPCXDYpQ6h5AHlbDs6SkQPv0kpsBDuDla9cmAQ8lIUaHiKmRAadmIHEzE2FpKejjKf4P1ABZOUtoDOMUt001XRwXuBY
