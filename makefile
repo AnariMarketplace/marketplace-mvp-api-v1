@@ -9,6 +9,8 @@ MAGENTA:= \033[35m
 CYAN   := \033[36m
 WHITE  := \033[37m
 RESET  := \033[0m
+BOLD  := \033[1m
+
 # A "help" target is often handy so team members can quickly see the available targets.
 help:
 	@echo "Available targets:"
@@ -75,7 +77,9 @@ serv-local:
 serv-prod:
 	serverless deploy --stage production --region us-west-2
 
-
+stripe-docker-cli:
+	docker run --rm -it stripe/stripe-cli listen \
+    --api-key rk_test_51QiMYvGUPCXDYpQ6h5AHlbDs6SkQPv0kpsBDuDla9cmAQ8lIUaHiKmRAadmIHEzE2FpKejjKf4P1ABZOUtoDOMUt001XRwXuBY
 
 
 
@@ -95,9 +99,9 @@ open-browser:
 
 init-locals:
 	@echo "$(BLUE)Initializing local services🛠️...$(RESET)"
-	@echo "$(MAGENTA)starting localstack container...$(RESET)"
+	@echo "$(MAGENTA)Starting localstack container...$(RESET)"
 	docker run -d --rm -it -p 4566:4566 -p 4510-4559:4510-4559 -v /var/run/docker.sock:/var/run/docker.sock localstack/localstack;
-	@echo "$(GREEN)localstack container started...$(RESET)"
+	@echo "$(GREEN)Localstack container started...$(RESET)"
 	@echo "$(MAGENTA)Deploying cloud infrastructure locally...$(RESET)"
 	serverless deploy --stage local --region us-west-2;
 	@echo "$(GREEN)localstack container started...$(RESET)"
@@ -111,6 +115,23 @@ init-locals:
 # 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
 # 	stripe listen --events payment_intent.created,customer.created,payment_intent.succeeded,checkout.session.completed,payment_intent.payment_failed \
 #   --forward-to http://localhost:3000/payment-service/webhook
-	@echa "Database Studio @$(BLUE)http://localhost:54323/$(RESET)"
 	@echo "$(GREEN)All services deployed successfully🚀...$(RESET)"
+	@echo "💫 Access Supabase studio -> $(BOLD)$(BLUE)http://localhost:54323/$(RESET)"
 
+deploy-listing:
+	serverless deploy function -f listingService --stage local --region us-west-2
+
+deploy-payment:
+	serverless deploy function -f paymentService --stage local --region us-west-2
+
+deploy-delivery:
+	serverless deploy function -f deliveryService --stage local --region us-west-2
+
+deploy-order:
+	serverless deploy function -f orderService --stage local --region us-west-2
+
+deploy-notification:
+	serverless deploy function -f notificationService --stage local --region us-west-2
+
+deploy-all:
+	serverless deploy --stage local --region us-west-2;

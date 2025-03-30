@@ -37,10 +37,10 @@ export const createListingHandler = async (
                 TopicArn: 'arn:aws:sns:us-west-2:000000000000:FanoutTopic'
             })
         );
-
+        const testData = { ...responseDto, test: true };
         return {
             statusCode: 201,
-            body: JSON.stringify(responseDto)
+            body: JSON.stringify(testData)
         };
     } catch (error) {
         // -- Let your main Lambda handler do the final error-to-HTTP-response mapping
