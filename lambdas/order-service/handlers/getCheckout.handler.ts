@@ -12,7 +12,7 @@ export const getCheckoutHandler = async (
 
         // const intent = await service.createPaymentIntent(payload.checkoutRequestId);
 
-        const deliveryPricingRequest = await fetch('http://host.docker.internal:3000/pricing-requests', {
+        const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
