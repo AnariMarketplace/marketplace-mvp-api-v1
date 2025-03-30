@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { initServer, matchRoute } from './server';
 
-const { routes, service } = initServer();
+const { routes, service, snsClient } = initServer();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Log the incoming request method/path
@@ -23,7 +23,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         event.pathParameters = matchedRoute.params;
         //@ts-ignore
 
-        return await matchedRoute.route.handler(event, service);
+        return await matchedRoute.route.handler(event, service, snsClient);
         // return await route.handler(event, service);
     } catch (err: any) {
         // Log and return the error

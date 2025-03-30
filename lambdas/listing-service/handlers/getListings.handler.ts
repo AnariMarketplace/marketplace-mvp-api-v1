@@ -5,10 +5,12 @@ import { POJO } from '../types/constants';
 import { ListingService } from '../service/listing.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
+import { SNSClient } from '@aws-sdk/client-sns';
 
 export const getListingHandler = async (
     event: APIGatewayProxyEvent,
-    service: ListingService
+    service: ListingService,
+    snsClient: SNSClient
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = event.queryStringParameters ?? '{}';

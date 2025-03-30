@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { ListingService } from '../../service/listing.service';
 import { mapper } from '../../mappers/listings.mapper';
 import { createListingHandler } from '../../handlers/createListing.handler';
+import { SNSClient } from '@aws-sdk/client-sns';
 
 // Mock the entire MessageService class
 jest.mock('../../service/listing.service');
@@ -48,7 +49,7 @@ describe('createListingHandler tests', () => {
         };
 
         // Act
-        const result: APIGatewayProxyResult = await createListingHandler(event, mockService);
+        const result: APIGatewayProxyResult = await createListingHandler(event, mockService, new SNSClient());
 
         // Assert
         expect(result.statusCode).toBe(201);

@@ -8,9 +8,10 @@ export default {
         '^.+\\.ts?$': 'ts-jest'
     },
     clearMocks: true,
+    verbose: true,
     collectCoverage: true,
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
     testEnvironment: 'node',
-    testMatch: ['**/tests/**/*.test.ts']
+    testMatch: ['tests/**/*.test.ts']
 };
