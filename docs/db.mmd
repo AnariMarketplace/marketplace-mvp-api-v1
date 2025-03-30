@@ -145,6 +145,14 @@ json vehicle_metadata "{
 
 }
 
+"user-service:drivers_realtime_metadata"{
+  uuid driver_id FK
+  bool is_active
+  timestamp last_active_at
+  coords current_lat
+  coords current_lng
+  bool is_on_delivery
+}
 
 
 "user-service:sellers" ||--|{ "listing-service:listings" : "manages"

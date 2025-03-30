@@ -3,9 +3,9 @@ info:
   title: Listing Service API
   version: "1.0.0"
   description: A RESTful API for managing product listings in the listing service.
-servers:
-  - url: https://api.example.com/v1
-    description: Production server (replace with your actual server)
+# servers:
+#   - url: https://api.example.com/v1
+#     description: Production server (replace with your actual server)
 tags:
   - name: Listings
     description: Operations related to product listings
