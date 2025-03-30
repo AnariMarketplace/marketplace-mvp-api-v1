@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Listing Service API Docs
+  title: Order Service API
   version: 1.0.0
 
 paths:
@@ -26,7 +26,7 @@ paths:
                 createCheckoutResponse:
                   summary: Example response for a created checkout
                   value:
-                    checkoutId: 101
+                    checkoutId: "0f2cc7b3-1ab4-4113-9df9-a3da7a3c5cbb"
                     totalPrice: 799.99
                     currency: "USD"
                     items:
@@ -43,6 +43,17 @@ paths:
                       street: "Main St"
                       latCoords: 12345
                       lngCoords: 67890
+                    deliveryDetails:
+                      category: "ANARI XL"
+                      travelTime: "25 mins"
+                      travelDistance: "15 miles"
+                      feeBreakdown:
+                        total: 10.5
+                        surcharges:
+                          - reason: "High Congestion Area"
+                            fee: 0.5
+                        distanceCharge: 5
+                        weightCharge: 5
 
     put:
       summary: Update an existing checkout
@@ -65,7 +76,7 @@ paths:
                 updateCheckoutResponse:
                   summary: Example response for an updated checkout
                   value:
-                    checkoutId: 101
+                    checkoutId: "d74f4f0b-6c9f-4c89-9f6e-3c899fd604be"
                     totalPrice: 699.99
                     currency: "USD"
                     items:
@@ -82,6 +93,18 @@ paths:
                       street: "Main St"
                       latCoords: 12345
                       lngCoords: 67890
+                    deliveryDetails:
+                      category: "ANARI XL"
+                      travelTime: "25 mins"
+                      travelDistance: "test milessssssss"
+                      estimatedDeliveryTime: "45 mins"
+                      feeBreakdown:
+                        total: 10.5
+                        surcharges:
+                          - reason: "High Congestion Area"
+                            fee: 0.5
+                        distanceCharge: 5
+                        weightCharge: 5
 
 components:
   schemas:
@@ -146,3 +169,42 @@ components:
                 type: integer
         customerDetails:
           $ref: "#/components/schemas/CustomerDetails"
+        deliveryDetails:
+          type: object
+          description: "All relevant delivery information"
+          properties:
+            category:
+              type: string
+              description: "Vehicle category or service level"
+            travelTime:
+              type: string
+              description: "Estimated travel time in minutes (or as a text description)"
+            travelDistance:
+              type: string
+              description: "Travel distance (e.g., '5 miles')"
+            estimatedDeliveryTime:
+              type: string
+              description: "Estimated total delivery time"
+            feeBreakdown:
+              type: object
+              description: "Details on fees and surcharges"
+              properties:
+                total:
+                  type: number
+                  format: float
+                surcharges:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      reason:
+                        type: string
+                      fee:
+                        type: number
+                        format: float
+                distanceCharge:
+                  type: number
+                  format: float
+                weightCharge:
+                  type: number
+                  format: float
