@@ -1,4 +1,8 @@
+# ER Diagram for Services Tables
 
+This diagram shows the entity relationships among the **Order Service**, **Listing Service**, **User Service**, and **Delivery Service**.
+
+```mermaid
 %%{init: {'theme':'default'}}%%
 erDiagram
 "order-service:checkout" {
@@ -12,7 +16,7 @@ erDiagram
   text delivery_address
   text delivery_pricing_request_id FK
   double subtotal
-  enum status  
+  enum status
 }
 
 "checkout-indexes" {
@@ -20,7 +24,6 @@ erDiagram
   string purchaseType(BUY__RENT)
   string sellerId
 }
-
 
 "listing-service:listings" {
   uuid id PK
@@ -63,7 +66,6 @@ erDiagram
   uuid user_id FK
 }
 
-
 "payment-service:transactions" {
   uuid id
   text payment_service_charge_id
@@ -84,21 +86,21 @@ erDiagram
 }
 
 "delivery-service:pricing-requests"{
-uuid id PK
-enum recommended_category "ENUM (BASE,XL)"
-enum recommended_vehicle_category "ENUM (SMALL,MED,LARGE)"
-coords pickup_coords
-coords dropoff_coords
-double total
-json[] surcharges "{reason,fee}"
-double distance_charge
-double weight_charge
-int travel_distance
-int travel_time
-text selected_pickup_time
-timestamp expires_at
-timestamp createdAt
-timestamp updatedAt
+  uuid id PK
+  enum recommended_category "ENUM (BASE,XL)"
+  enum recommended_vehicle_category "ENUM (SMALL,MED,LARGE)"
+  coords pickup_coords
+  coords dropoff_coords
+  double total
+  json[] surcharges "{reason,fee}"
+  double distance_charge
+  double weight_charge
+  int travel_distance
+  int travel_time
+  text selected_pickup_time
+  timestamp expires_at
+  timestamp createdAt
+  timestamp updatedAt
 }
 
 "delivery-service:deliveries"{
@@ -129,20 +131,19 @@ timestamp updatedAt
 }
 
 "user-service:drivers"{
-uuid id PK
-text first_name
-text last_name
-text email
-enum vehicle_category "Enum(SMALL,MID,LARGE)"
-text photo
-json vehicle_metadata "{
+  uuid id PK
+  text first_name
+  text last_name
+  text email
+  enum vehicle_category "Enum(SMALL,MID,LARGE)"
+  text photo
+  json vehicle_metadata "{
     license_plate,
     make,
     model,
     year,
-    color,
+    color
   }"
-
 }
 
 "user-service:drivers_realtime_metadata"{
@@ -154,11 +155,10 @@ json vehicle_metadata "{
   bool is_on_delivery
 }
 
-
 "user-service:sellers" ||--|{ "listing-service:listings" : "manages"
 "order-service:checkout" ||--|{ "listing-service:listings" : "has"
 "order-service:orders" ||--|{ "listing-service:listings" : "has"
 "order-service:checkout"||--||checkout-indexes : "uses"
 "user-service:sellers" ||--o{ "user-service:users" : "is"
 "user-service:drivers" ||--o{ "user-service:users" : "is"
-
+```
