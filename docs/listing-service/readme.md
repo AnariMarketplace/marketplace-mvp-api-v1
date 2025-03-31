@@ -10,11 +10,15 @@ For the complete API specification, please refer to the [OpenAPI YAML file](../L
 [api.yaml](./api.yaml)
 {% endswagger %}
 
+---
+
 ## Create a new listing
 
 {% swagger src="./api.yaml" path="/listings" method="post" %}
 [api.yaml](./api.yaml)
 {% endswagger %}
+
+---
 
 ## Retrieve a specific listing
 
@@ -22,11 +26,15 @@ For the complete API specification, please refer to the [OpenAPI YAML file](../L
 [api.yaml](./api.yaml)
 {% endswagger %}
 
+---
+
 ## Update a listing
 
 {% swagger src="./api.yaml" path="/listings/{id}" method="put" %}
 [api.yaml](./api.yaml)
 {% endswagger %}
+
+---
 
 ## Delete a listing
 
