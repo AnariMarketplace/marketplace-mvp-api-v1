@@ -1,0 +1,94 @@
+openapi: 3.0.3
+info:
+  title: Payment Service API
+  version: "1.0.0"
+  description: >
+    API endpoints for creating payment intents and processing Stripe webhook events.
+servers:
+  - url: http://payment.example.com/v1
+tags:
+  - name: Payment
+  - name: Stripe
+
+paths:
+  /start-payment-intent:
+    post:
+      tags:
+        - Payment
+      summary: Create a new payment intent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentIntentInput"
+      responses:
+        "200":
+          description: Payment intent created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        "400":
+          description: Invalid input.
+
+  /stripe-webhook:
+    post:
+      tags:
+        - Stripe
+      summary: Process Stripe webhook events
+      description: >
+        Receives and processes Stripe webhook events (e.g., payment_intent.succeeded).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Webhook event payload from Stripe.
+      responses:
+        "200":
+          description: Webhook event processed successfully.
+        "400":
+          description: Invalid webhook payload.
+
+components:
+  schemas:
+    PaymentIntent:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the payment intent.
+        clientSecret:
+          type: string
+          description: The client secret associated with the payment intent.
+        amount:
+          type: number
+          format: float
+          description: The amount to be charged.
+        currency:
+          type: string
+          description: Currency code (e.g., USD, EUR).
+      required:
+        - id
+        - clientSecret
+        - amount
+        - currency
+
+    PaymentIntentInput:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: The amount to be charged.
+        currency:
+          type: string
+          description: Currency code (e.g., USD, EUR).
+        metadata:
+          type: object
+          description: Additional metadata for the payment intent.
+      required:
+        - amount
+        - currency

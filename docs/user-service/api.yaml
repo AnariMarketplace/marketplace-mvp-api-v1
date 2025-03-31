@@ -1,121 +1,520 @@
 openapi: 3.0.3
 info:
-  title: Listing Service API Docs
-  version: 1.0.0
+  title: User Service API
+  version: "1.0.0"
+  description: A RESTful API for managing users, sellers, drivers, and realtime driver metadata.
+servers:
+  - url: http://user.example.com/v1
+tags:
+  - name: Users
+  - name: Sellers
+  - name: Drivers
+  - name: DriversRealtimeMetadata
 
 paths:
-  /listings:
-    post:
-      summary: Seller creates a new Listing
-      operationId: createListing
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "./schemas.yaml#/components/schemas/ListingInput"
-            examples:
-              createListingExample:
-                summary: Example request body for creating a new listing
-                value:
-                  title: "Antique Vase"
-                  mainCategory: "Home Decor"
-                  subCategory: "Vases"
-                  price: 99.99
-                  priceNegotiable: true
-                  metadata:
-                    color: "blue"
-                    material: "ceramic"
-                    size: "medium"
-      responses:
-        "200":
-          description: Successfully created a listing
-          content:
-            application/json:
-              schema:
-                $ref: "./schemas.yaml#/components/schemas/ListingOutput"
-              examples:
-                createListingResponse:
-                  summary: Example response for a created listing
-                  value:
-                    id: 123
-                    title: "Antique Vase"
-                    mainCategory: "Home Decor"
-                    subCategory: "Vases"
-                    price: 99.99
-                    priceNegotiable: true
-                    metadata:
-                      color: "blue"
-                      material: "ceramic"
-                      size: "medium"
-
+  /users:
     get:
-      summary: Get all listings in the buyer area using buyer coordinates
-      operationId: getListings
+      tags:
+        - Users
+      summary: Retrieve all users
       responses:
         "200":
-          description: A list of nearby listings
+          description: A list of users.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "./schemas.yaml#/components/schemas/ListingOutput"
-              examples:
-                getListingsExample:
-                  summary: Example response for a list of listings
-                  value:
-                    - id: 123
-                      title: "Antique Vase"
-                      mainCategory: "Home Decor"
-                      subCategory: "Vases"
-                      price: 99.99
-                      priceNegotiable: true
-                      metadata:
-                        color: "blue"
-                        material: "ceramic"
-                        size: "medium"
-                    - id: 456
-                      title: "Modern Lamp"
-                      mainCategory: "Home Decor"
-                      subCategory: "Lighting"
-                      price: 45.50
-                      priceNegotiable: false
-                      metadata:
-                        color: "silver"
-                        material: "steel"
-                        size: "large"
+                  $ref: "#/components/schemas/User"
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
 
-  /listings/{id}:
+  /users/{userId}:
     get:
-      summary: Get a listing by ID
-      operationId: getListing
+      tags:
+        - Users
+      summary: Retrieve a specific user
       parameters:
         - in: path
-          name: id
+          name: userId
           required: true
-          description: UUID of the listing
           schema:
             type: string
             format: uuid
       responses:
         "200":
-          description: A single listing
+          description: User found
           content:
             application/json:
               schema:
-                $ref: "./schemas.yaml#/components/schemas/ListingOutput"
-              examples:
-                getListingExample:
-                  summary: Example response for a single listing
-                  value:
-                    id: 123
-                    title: "Antique Vase"
-                    mainCategory: "Home Decor"
-                    subCategory: "Vases"
-                    price: 99.99
-                    priceNegotiable: true
-                    metadata:
-                      color: "blue"
-                      material: "ceramic"
-                      size: "medium"
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+    put:
+      tags:
+        - Users
+      summary: Update a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: User deleted successfully
+        "404":
+          description: User not found
+
+  /sellers:
+    get:
+      tags:
+        - Sellers
+      summary: Retrieve all sellers
+      responses:
+        "200":
+          description: A list of sellers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Seller"
+    post:
+      tags:
+        - Sellers
+      summary: Create a new seller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellerInput"
+      responses:
+        "201":
+          description: Seller created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seller"
+
+  /sellers/{sellerId}:
+    get:
+      tags:
+        - Sellers
+      summary: Retrieve a specific seller
+      parameters:
+        - in: path
+          name: sellerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Seller found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seller"
+        "404":
+          description: Seller not found
+    put:
+      tags:
+        - Sellers
+      summary: Update a seller
+      parameters:
+        - in: path
+          name: sellerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SellerInput"
+      responses:
+        "200":
+          description: Seller updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seller"
+        "404":
+          description: Seller not found
+    delete:
+      tags:
+        - Sellers
+      summary: Delete a seller
+      parameters:
+        - in: path
+          name: sellerId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Seller deleted
+        "404":
+          description: Seller not found
+
+  /drivers:
+    get:
+      tags:
+        - Drivers
+      summary: Retrieve all drivers
+      responses:
+        "200":
+          description: A list of drivers.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Driver"
+    post:
+      tags:
+        - Drivers
+      summary: Create a new driver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DriverInput"
+      responses:
+        "201":
+          description: Driver created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+
+  /drivers/{driverId}:
+    get:
+      tags:
+        - Drivers
+      summary: Retrieve a specific driver
+      parameters:
+        - in: path
+          name: driverId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Driver found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+        "404":
+          description: Driver not found
+    put:
+      tags:
+        - Drivers
+      summary: Update a driver
+      parameters:
+        - in: path
+          name: driverId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DriverInput"
+      responses:
+        "200":
+          description: Driver updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Driver"
+        "404":
+          description: Driver not found
+    delete:
+      tags:
+        - Drivers
+      summary: Delete a driver
+      parameters:
+        - in: path
+          name: driverId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Driver deleted
+        "404":
+          description: Driver not found
+
+  /drivers-realtime-metadata:
+    get:
+      tags:
+        - DriversRealtimeMetadata
+      summary: Retrieve all drivers' realtime metadata
+      responses:
+        "200":
+          description: A list of driver realtime metadata entries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DriverRealtimeMetadata"
+    post:
+      tags:
+        - DriversRealtimeMetadata
+      summary: Create driver realtime metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DriverRealtimeMetadataInput"
+      responses:
+        "201":
+          description: Metadata entry created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DriverRealtimeMetadata"
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+        authId:
+          type: string
+      required:
+        - id
+        - email
+
+    UserInput:
+      type: object
+      properties:
+        email:
+          type: string
+        authId:
+          type: string
+
+    Seller:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        pageName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        acceptingPayments:
+          type: boolean
+        isVerified:
+          type: boolean
+        photoUrl:
+          type: string
+        hoursStart:
+          type: string
+          format: date-time
+        hoursEnd:
+          type: string
+          format: date-time
+        pickupAddressCity:
+          type: string
+        pickupAddressState:
+          type: string
+        pickupAddressZip:
+          type: string
+        pickupAddressFull:
+          type: string
+        pickupAddressCoords:
+          type: string
+        userId:
+          type: string
+          format: uuid
+      required:
+        - id
+        - pageName
+        - firstName
+        - lastName
+
+    SellerInput:
+      type: object
+      properties:
+        pageName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        acceptingPayments:
+          type: boolean
+        isVerified:
+          type: boolean
+        photoUrl:
+          type: string
+        hoursStart:
+          type: string
+          format: date-time
+        hoursEnd:
+          type: string
+          format: date-time
+        pickupAddressCity:
+          type: string
+        pickupAddressState:
+          type: string
+        pickupAddressZip:
+          type: string
+        pickupAddressFull:
+          type: string
+        pickupAddressCoords:
+          type: string
+        userId:
+          type: string
+          format: uuid
+
+    Driver:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        vehicleCategory:
+          type: string
+          enum: [SMALL, MID, LARGE]
+        photo:
+          type: string
+        vehicleMetadata:
+          type: object
+          description: JSON info about the vehicle (license plate, make, model, year, color)
+      required:
+        - id
+        - firstName
+        - lastName
+        - email
+
+    DriverInput:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        vehicleCategory:
+          type: string
+          enum: [SMALL, MID, LARGE]
+        photo:
+          type: string
+        vehicleMetadata:
+          type: object
+
+    DriverRealtimeMetadata:
+      type: object
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+        lastActiveAt:
+          type: string
+          format: date-time
+        currentLat:
+          type: number
+          format: float
+        currentLng:
+          type: number
+          format: float
+        isOnDelivery:
+          type: boolean
+      required:
+        - driverId
+
+    DriverRealtimeMetadataInput:
+      type: object
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        isActive:
+          type: boolean
+        lastActiveAt:
+          type: string
+          format: date-time
+        currentLat:
+          type: number
+          format: float
+        currentLng:
+          type: number
+          format: float
+        isOnDelivery:
+          type: boolean
