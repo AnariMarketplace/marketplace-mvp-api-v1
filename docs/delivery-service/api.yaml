@@ -1,0 +1,476 @@
+openapi: 3.0.3
+info:
+  title: Delivery Service API
+  version: "1.0.0"
+  description: A RESTful API for managing deliveries and pricing requests.
+servers:
+  - url: http://delivery.example.com/v1
+tags:
+  - name: PricingRequests
+  - name: Deliveries
+
+paths:
+  /pricing-requests:
+    get:
+      tags:
+        - PricingRequests
+      summary: Retrieve all pricing requests
+      responses:
+        "200":
+          description: A list of pricing requests.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PricingRequest"
+    post:
+      tags:
+        - PricingRequests
+      summary: Create a new pricing request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PricingRequestInput"
+      responses:
+        "201":
+          description: Pricing request created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricingRequest"
+
+  /pricing-requests/{pricingRequestId}:
+    get:
+      tags:
+        - PricingRequests
+      summary: Retrieve a specific pricing request
+      parameters:
+        - in: path
+          name: pricingRequestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Pricing request found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricingRequest"
+        "404":
+          description: Pricing request not found
+    put:
+      tags:
+        - PricingRequests
+      summary: Update a pricing request
+      parameters:
+        - in: path
+          name: pricingRequestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PricingRequestInput"
+      responses:
+        "200":
+          description: Pricing request updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricingRequest"
+        "404":
+          description: Pricing request not found
+    delete:
+      tags:
+        - PricingRequests
+      summary: Delete a pricing request
+      parameters:
+        - in: path
+          name: pricingRequestId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Pricing request deleted successfully
+        "404":
+          description: Pricing request not found
+
+  /deliveries:
+    get:
+      tags:
+        - Deliveries
+      summary: Retrieve all deliveries
+      responses:
+        "200":
+          description: A list of deliveries.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Delivery"
+    post:
+      tags:
+        - Deliveries
+      summary: Create a new delivery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryInput"
+      responses:
+        "201":
+          description: Delivery created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+
+  /deliveries/{deliveryId}:
+    get:
+      tags:
+        - Deliveries
+      summary: Retrieve a specific delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Delivery found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+        "404":
+          description: Delivery not found
+    put:
+      tags:
+        - Deliveries
+      summary: Update a delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryInput"
+      responses:
+        "200":
+          description: Delivery updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Delivery"
+        "404":
+          description: Delivery not found
+    delete:
+      tags:
+        - Deliveries
+      summary: Delete a delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Delivery deleted successfully
+        "404":
+          description: Delivery not found
+
+components:
+  schemas:
+    PricingRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        recommendedCategory:
+          type: string
+          enum: [BASE, XL]
+        recommendedVehicleCategory:
+          type: string
+          enum: [SMALL, MED, LARGE]
+        pickupCoords:
+          type: object
+          properties:
+            lat:
+              type: number
+              format: float
+            lng:
+              type: number
+              format: float
+        dropoffCoords:
+          type: object
+          properties:
+            lat:
+              type: number
+              format: float
+            lng:
+              type: number
+              format: float
+        total:
+          type: number
+          format: float
+        surcharges:
+          type: array
+          items:
+            type: object
+            properties:
+              reason:
+                type: string
+              fee:
+                type: number
+                format: float
+        distanceCharge:
+          type: number
+          format: float
+        weightCharge:
+          type: number
+          format: float
+        travelDistance:
+          type: integer
+        travelTime:
+          type: integer
+        selectedPickupTime:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - recommendedCategory
+        - pickupCoords
+        - dropoffCoords
+        - total
+
+    PricingRequestInput:
+      type: object
+      properties:
+        recommendedCategory:
+          type: string
+          enum: [BASE, XL]
+        recommendedVehicleCategory:
+          type: string
+          enum: [SMALL, MED, LARGE]
+        pickupCoords:
+          type: object
+          properties:
+            lat:
+              type: number
+              format: float
+            lng:
+              type: number
+              format: float
+        dropoffCoords:
+          type: object
+          properties:
+            lat:
+              type: number
+              format: float
+            lng:
+              type: number
+              format: float
+        total:
+          type: number
+          format: float
+        surcharges:
+          type: array
+          items:
+            type: object
+            properties:
+              reason:
+                type: string
+              fee:
+                type: number
+                format: float
+        distanceCharge:
+          type: number
+          format: float
+        weightCharge:
+          type: number
+          format: float
+        travelDistance:
+          type: integer
+        travelTime:
+          type: integer
+        selectedPickupTime:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+
+    Delivery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            [
+              AWAITING_PICKUP,
+              IN_TRANSIT,
+              DELIVERED,
+              ORDER_CANCELLED,
+              DRIVER_CANCELLED,
+            ]
+        cancellationReason:
+          type: string
+        cancelledAt:
+          type: string
+          format: date-time
+        category:
+          type: string
+          enum: [BASE, XL]
+        deliveryNotes:
+          type: string
+        pickupTime:
+          type: string
+        travelDistance:
+          type: integer
+        travelTime:
+          type: integer
+        eta:
+          type: integer
+        pickupAddressFull:
+          type: string
+        dropoffAddressFull:
+          type: string
+        oversizedAssistanceRequired:
+          type: boolean
+        pickupLat:
+          type: number
+          format: float
+        pickupLng:
+          type: number
+          format: float
+        dropoffLat:
+          type: number
+          format: float
+        dropoffLng:
+          type: number
+          format: float
+        fee:
+          type: number
+          format: float
+        startedAt:
+          type: string
+          format: date-time
+        closedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - status
+        - createdAt
+        - updatedAt
+
+    DeliveryInput:
+      type: object
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            [
+              AWAITING_PICKUP,
+              IN_TRANSIT,
+              DELIVERED,
+              ORDER_CANCELLED,
+              DRIVER_CANCELLED,
+            ]
+        cancellationReason:
+          type: string
+        cancelledAt:
+          type: string
+          format: date-time
+        category:
+          type: string
+          enum: [BASE, XL]
+        deliveryNotes:
+          type: string
+        pickupTime:
+          type: string
+        travelDistance:
+          type: integer
+        travelTime:
+          type: integer
+        eta:
+          type: integer
+        pickupAddressFull:
+          type: string
+        dropoffAddressFull:
+          type: string
+        oversizedAssistanceRequired:
+          type: boolean
+        pickupLat:
+          type: number
+          format: float
+        pickupLng:
+          type: number
+          format: float
+        dropoffLat:
+          type: number
+          format: float
+        dropoffLng:
+          type: number
+          format: float
+        fee:
+          type: number
+          format: float
+        startedAt:
+          type: string
+          format: date-time
+        closedAt:
+          type: string
+          format: date-time

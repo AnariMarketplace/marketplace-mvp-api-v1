@@ -19,11 +19,7 @@ erDiagram
   enum status
 }
 
-"checkout-indexes" {
-  string title
-  string purchaseType(BUY__RENT)
-  string sellerId
-}
+
 
 "listing-service:listings" {
   uuid id PK
