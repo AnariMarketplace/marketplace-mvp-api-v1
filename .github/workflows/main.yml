@@ -5,6 +5,9 @@ on:
     branches:
       - dev
     types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - dev
 
 jobs:
   deploy:
