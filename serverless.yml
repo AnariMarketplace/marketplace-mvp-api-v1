@@ -36,10 +36,11 @@ custom:
   env:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
-      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/s0ywbykfce/local
+      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/okygzzomou/local
 
     dev:
-      DATABASE_URL: postgres://dev-user:dev-pass@dev.db.amazonaws.com:5432/devdb
+      DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co
+      SERVICES_URL: https://api.anarimarketplace.com
 
     production:
       DATABASE_URL: postgres://aws-user:aws-pass@your-prod-rds.amazonaws.com:5432/proddb
@@ -51,12 +52,18 @@ functions:
       - http:
           path: listings
           method: post
+          apiKeyRequired: false
+
       - http:
           path: listings
           method: get
+          apiKeyRequired: false
+
       - http:
           path: listings/{id}
           method: get
+          apiKeyRequired: false
+
       - sqs:
           arn:
             Fn::GetAtt:
@@ -69,6 +76,8 @@ functions:
       - http:
           path: start-payment-intent
           method: post
+          apiKeyRequired: false
+
       - http:
           path: payment-service/webhook
           method: post
@@ -84,6 +93,8 @@ functions:
       - http:
           path: pricing-requests
           method: post
+          apiKeyRequired: false
+
       - sqs:
           arn:
             Fn::GetAtt:
@@ -96,6 +107,8 @@ functions:
       - http:
           path: checkout
           method: get
+          apiKeyRequired: false
+
       - sqs:
           arn:
             Fn::GetAtt:

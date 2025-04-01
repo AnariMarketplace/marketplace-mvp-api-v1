@@ -6,7 +6,7 @@ export default defineConfig({
   schema: "./**/**/db/schema.ts",
   dialect: "postgresql",
   dbCredentials: {
-    url: "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+    url: "postgresql://postgres.etxyzjizvpnycobqjqgk:mydbtestingDEV@aws-0-us-west-1.pooler.supabase.com:5432/postgres",
   },
   casing: "snake_case",
 });

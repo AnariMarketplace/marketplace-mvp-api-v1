@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
-import { PaymentService } from '../service/paymentIntent.service';
+import { PaymentService } from '../service/payment.service';
 
 export const webhookHandler = async (
     event: APIGatewayProxyEvent,
