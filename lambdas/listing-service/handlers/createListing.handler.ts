@@ -14,7 +14,7 @@ export const createListingHandler = async (
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
-
+        console.log(payload);
         const validatedListing = ListingInputValidationSchema.parse(payload);
 
         const listingEntity = mapper.map<ListingInputDto, Listing>(
