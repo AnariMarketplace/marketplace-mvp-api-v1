@@ -14,7 +14,7 @@ export const getListingHandler = async (
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = event.queryStringParameters ?? '{}';
-        console.log('payload', payload);
+        console.log('payload:', payload);
 
         const validQuery = ApiQueryValidationSchema.parse(payload);
         console.log(validQuery);
