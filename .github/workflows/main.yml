@@ -17,14 +17,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Main Dependencies
+      - name: Setup npm auth for private packages
+        run: |
+          echo "@anarimarketplace:registry=https://registry.npmjs.org/" > ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install Main Dependencies
         run: npm ci
         
       - name: Install Lambda Dependencies
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for dir in lambdas/*/; do
             echo "Installing dependencies for $dir"
