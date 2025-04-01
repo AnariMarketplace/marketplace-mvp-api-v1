@@ -19,13 +19,17 @@ jobs:
 
       - name: Install Main Dependencies
         run: npm ci
-
+      - env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
       - name: Install Lambda Dependencies
         run: |
           for dir in lambdas/*/; do
             echo "Installing dependencies for $dir"
             cd "$dir" && npm ci && cd -
           done
+      - env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Database Migration
         run: npx drizzle-kit migrate --config=drizzle.dev.config.ts
