@@ -26,7 +26,7 @@ export const getCheckoutHandler = async (
             statusCode: 201,
             body: JSON.stringify({
                 ...dpr,
-                total: 100 + dpr.feeBreakdown.total
+                total: 100 + dpr.totalFee
             })
         };
     } catch (error) {

@@ -4,7 +4,7 @@ import { mapper } from './mappers/payments.mapper';
 import { Route } from './types/types';
 // import { ListingService } from './service/paymentIntent.service';
 import { createPaymentIntentHandler } from './handlers/createPaymentIntent.handler';
-import { PaymentService } from './service/paymentIntent.service';
+import { PaymentService } from './service/payment.service';
 import Stripe from 'stripe';
 import { coorsHandler } from './handlers/cors.handler';
 import { webhookHandler } from './handlers/webhook.handler';

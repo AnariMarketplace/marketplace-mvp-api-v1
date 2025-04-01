@@ -10,13 +10,49 @@ CREATE SCHEMA "payment_service";
 --> statement-breakpoint
 CREATE SCHEMA "user_service";
 --> statement-breakpoint
+CREATE TYPE "delivery_service"."category" AS ENUM('BASE', 'XL');--> statement-breakpoint
+CREATE TYPE "delivery_service"."status" AS ENUM('AWAITING_PICKUP', 'IN_TRANSIT', 'DELIVERED', 'ORDER_CANCELLED', 'DRIVER_CANCELLED');--> statement-breakpoint
+CREATE TYPE "delivery_service"."recommended_category" AS ENUM('BASE', 'XL');--> statement-breakpoint
+CREATE TYPE "delivery_service"."recommended_vehicle_size_category" AS ENUM('SMALL', 'MED', 'LARGE');--> statement-breakpoint
 CREATE TABLE "delivery_service"."deliveries" (
-	"title" varchar NOT NULL,
-	"seller_id" uuid NOT NULL,
-	"purchase_type" varchar DEFAULT 'SALE',
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"price" numeric NOT NULL,
-	"condition" varchar
+	"id" uuid PRIMARY KEY NOT NULL,
+	"driver_id" uuid,
+	"order_id" uuid,
+	"status" "delivery_service"."status",
+	"cancellation_reason" text,
+	"cancelled_at" timestamp,
+	"category" "delivery_service"."category",
+	"delivery_notes" text,
+	"pickup_time" text,
+	"travel_distance" integer,
+	"travel_time" integer,
+	"eta" integer,
+	"pickup_address_full" json,
+	"dropoff_address_full" json,
+	"oversized_assistance_required" boolean,
+	"total_fee" numeric,
+	"started_at" timestamp,
+	"closed_at" timestamp,
+	"createdAt" timestamp DEFAULT now(),
+	"updatedAt" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "delivery_service"."pricing_requests" (
+	"id" uuid PRIMARY KEY NOT NULL,
+	"recommended_category" "delivery_service"."recommended_category",
+	"recommended_vehicle_size_category" "delivery_service"."recommended_vehicle_size_category",
+	"pickup_address_full" json,
+	"dropoff_address_full" json,
+	"total_fee" numeric,
+	"surcharges" json[],
+	"distance_charge" numeric,
+	"weight_charge" numeric,
+	"travel_distance" integer,
+	"travel_time" integer,
+	"selected_pickup_time" text,
+	"expires_at" timestamp,
+	"createdAt" timestamp DEFAULT now(),
+	"updatedAt" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "listing_service"."listings" (
@@ -37,7 +73,7 @@ CREATE TABLE "notification_service"."notifications" (
 	"condition" varchar
 );
 --> statement-breakpoint
-CREATE TABLE "order_service"."checkout-requests" (
+CREATE TABLE "order_service"."checkout" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid,
 	"line_items" jsonb NOT NULL,

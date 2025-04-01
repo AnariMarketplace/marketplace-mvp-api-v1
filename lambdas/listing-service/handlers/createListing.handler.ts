@@ -14,7 +14,7 @@ export const createListingHandler = async (
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
-
+        console.log(payload);
         const validatedListing = ListingInputValidationSchema.parse(payload);
 
         const listingEntity = mapper.map<ListingInputDto, Listing>(
@@ -33,7 +33,7 @@ export const createListingHandler = async (
 
         await snsClient.send(
             new PublishCommand({
-                Message: JSON.stringify(responseDto),
+                Message: JSON.stringify({ ...responseDto, event: 'LISTING_SERVICE:LISTING:CREATED' }),
                 TopicArn: 'arn:aws:sns:us-west-2:000000000000:FanoutTopic'
             })
         );

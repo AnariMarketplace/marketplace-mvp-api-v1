@@ -1,1 +1,0 @@
-ALTER TABLE "order_service"."checkout-requests" RENAME TO "checkout";

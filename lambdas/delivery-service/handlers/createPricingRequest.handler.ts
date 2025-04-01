@@ -1,14 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { mapper } from '../mappers/listings.mapper';
-import { Listing, ListingInputDto, ListingInputValidationSchema, ListingOutputDto } from '../types/types';
+import { mapper } from '../mappers/delivery.mapper';
 import { POJO } from '../types/constants';
-import { ListingService } from '../service/listing.service';
+import { DeliveryService } from '../service/delivery.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
+import { PricingRequest, PricingRequestOutputDto } from '../types/types';
 
 export const createPricingRequestHandler = async (
     event: APIGatewayProxyEvent,
-    service: ListingService
+    service: DeliveryService
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
@@ -29,28 +29,35 @@ export const createPricingRequestHandler = async (
         //     POJO.LISTING_OUTPUT_DTO
         // );
 
+        const mappedPR = mapper.map<PricingRequest, PricingRequestOutputDto>(
+            {
+                id: '7c8b649c-f967-4216-96ed-cb23dbcdd426',
+                recommendedCategory: 'XL',
+                travelTime: 14405,
+                travelDistance: 15,
+                totalFee: 10.5,
+                surcharges: [
+                    {
+                        reason: 'High Congestion Area',
+                        fee: 0.5
+                    }
+                ],
+                distanceCharge: 5.0,
+                weightCharge: 5.0,
+                expiresAt: '',
+                createdAt: '',
+                recommendedVehicleSizeCategory: 'MED',
+                updatedAt: '',
+                selectedPickupTime: '9:00AM'
+            },
+            POJO.PRICING_REQUEST,
+            POJO.PRICING_REQUEST_OUTPUT_DTO
+        );
+        console.log(mappedPR);
+
         return {
             statusCode: 201,
-            body: JSON.stringify({
-                pricingRequestId: '7c8b649c-f967-4216-96ed-cb23dbcdd426',
-                category: 'ANARI XL',
-                travelTime: '25 mins',
-                travelDistance: 'test milessssssss',
-                estimatedDeliveryTime: '45 mins',
-                feeBreakdown: {
-                    total: 10.5,
-                    surcharges: [
-                        {
-                            reason: 'High Congestion Area',
-                            fee: 0.5
-                        }
-                    ],
-                    distanceCharge: 5.0,
-                    weightCharge: 5.0
-                },
-                estimatedArrivalTime: '5:30 PM',
-                expiresAt: 1742831956
-            })
+            body: JSON.stringify(mappedPR)
         };
     } catch (error) {
         // -- Let your main Lambda handler do the final error-to-HTTP-response mapping

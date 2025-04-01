@@ -1,13 +1,16 @@
 export enum POJO {
-    LISTING = 'Listing',
-    LISTING_OUTPUT_DTO = 'ListingOutputDto',
-    LISTING_INPUT_DTO = 'ListingInputDto',
-    LISTING_METADATA = 'ListingMetadata',
-    LISTING_TABLE_SCHEMA = 'ListingTable',
-    LISTING_API_QUERY = 'ListingApiQuery',
-    LISTING_API_QUERY_UNSTRUCTURED = 'ListingApiQueryUnstructured'
-}
+    // Pricing Request keys
+    PRICING_REQUEST = 'PricingRequest',
+    PRICING_REQUEST_INPUT_DTO = 'PricingRequestInput',
+    PRICING_REQUEST_OUTPUT_DTO = 'PricingRequestOutputDto',
+    PRICING_REQUEST_TABLE_SCHEMA = 'PricingRequestTable',
 
-// export enum DATABASE_TABLES {
-//     LISTINGS = 'Listings'
-// }
+    // Delivery keys
+    DELIVERY = 'Delivery',
+    DELIVERY_INPUT_DTO = 'DeliveryInput',
+    DELIVERY_OUTPUT_DTO = 'DeliveryOutputDto',
+    DELIVERY_TABLE_SCHEMA = 'DeliveryTable',
+
+    // Nested types (e.g. for addresses)
+    ADDRESS = 'Address'
+}

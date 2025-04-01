@@ -1,5 +1,5 @@
 {
-  "id": "1c5d7563-aee1-479f-b8a2-7188908924de",
+  "id": "9d08d4df-3ef0-4986-9b23-0a7d8bf80df3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -8,43 +8,236 @@
       "name": "deliveries",
       "schema": "delivery_service",
       "columns": {
-        "title": {
-          "name": "title",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "seller_id": {
-          "name": "seller_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "purchase_type": {
-          "name": "purchase_type",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "'SALE'"
-        },
         "id": {
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "price": {
-          "name": "price",
-          "type": "numeric",
-          "primaryKey": false,
           "notNull": true
         },
-        "condition": {
-          "name": "condition",
-          "type": "varchar",
+        "driver_id": {
+          "name": "driver_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "delivery_service",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cancellation_reason": {
+          "name": "cancellation_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cancelled_at": {
+          "name": "cancelled_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "category": {
+          "name": "category",
+          "type": "category",
+          "typeSchema": "delivery_service",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_notes": {
+          "name": "delivery_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pickup_time": {
+          "name": "pickup_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "travel_distance": {
+          "name": "travel_distance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "travel_time": {
+          "name": "travel_time",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "eta": {
+          "name": "eta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pickup_address_full": {
+          "name": "pickup_address_full",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dropoff_address_full": {
+          "name": "dropoff_address_full",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "oversized_assistance_required": {
+          "name": "oversized_assistance_required",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_fee": {
+          "name": "total_fee",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "closed_at": {
+          "name": "closed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "delivery_service.pricing_requests": {
+      "name": "pricing_requests",
+      "schema": "delivery_service",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "recommended_category": {
+          "name": "recommended_category",
+          "type": "recommended_category",
+          "typeSchema": "delivery_service",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "recommended_vehicle_size_category": {
+          "name": "recommended_vehicle_size_category",
+          "type": "recommended_vehicle_size_category",
+          "typeSchema": "delivery_service",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pickup_address_full": {
+          "name": "pickup_address_full",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dropoff_address_full": {
+          "name": "dropoff_address_full",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_fee": {
+          "name": "total_fee",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "surcharges": {
+          "name": "surcharges",
+          "type": "json[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distance_charge": {
+          "name": "distance_charge",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weight_charge": {
+          "name": "weight_charge",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "travel_distance": {
+          "name": "travel_distance",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "travel_time": {
+          "name": "travel_time",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "selected_pickup_time": {
+          "name": "selected_pickup_time",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -157,8 +350,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "order_service.checkout-requests": {
-      "name": "checkout-requests",
+    "order_service.checkout": {
+      "name": "checkout",
       "schema": "order_service",
       "columns": {
         "id": {
@@ -430,7 +623,44 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "delivery_service.category": {
+      "name": "category",
+      "schema": "delivery_service",
+      "values": [
+        "BASE",
+        "XL"
+      ]
+    },
+    "delivery_service.status": {
+      "name": "status",
+      "schema": "delivery_service",
+      "values": [
+        "AWAITING_PICKUP",
+        "IN_TRANSIT",
+        "DELIVERED",
+        "ORDER_CANCELLED",
+        "DRIVER_CANCELLED"
+      ]
+    },
+    "delivery_service.recommended_category": {
+      "name": "recommended_category",
+      "schema": "delivery_service",
+      "values": [
+        "BASE",
+        "XL"
+      ]
+    },
+    "delivery_service.recommended_vehicle_size_category": {
+      "name": "recommended_vehicle_size_category",
+      "schema": "delivery_service",
+      "values": [
+        "SMALL",
+        "MED",
+        "LARGE"
+      ]
+    }
+  },
   "schemas": {
     "delivery_service": "delivery_service",
     "listing_service": "listing_service",

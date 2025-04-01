@@ -84,10 +84,10 @@ erDiagram
 "delivery-service:pricing-requests"{
   uuid id PK
   enum recommended_category "ENUM (BASE,XL)"
-  enum recommended_vehicle_category "ENUM (SMALL,MED,LARGE)"
-  coords pickup_coords
-  coords dropoff_coords
-  double total
+  enum recommended_vehicle_size_category "ENUM (SMALL,MED,LARGE)"
+  json pickup_address_full
+  json dropoff_address_full
+  double total_fee
   json[] surcharges "{reason,fee}"
   double distance_charge
   double weight_charge
@@ -112,14 +112,10 @@ erDiagram
   int travel_distance
   int travel_time
   int eta
-  text pickup_address_full
-  text dropOff_address_full
+  json pickup_address_full
+  json dropoff_address_full
   bool oversized_assistance_required
-  double pickup_lat
-  double pickup_lng
-  double dropOff_lat
-  double dropOff_lng
-  double fee "** the driver's payout amount **"
+  double total_fee "** the driver's payout amount **"
   timestamp started_at
   timestamp closed_at
   timestamp createdAt

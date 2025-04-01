@@ -1,11 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
-import { ListingService } from '../service/listing.service';
+import { DeliveryService } from '../service/delivery.service';
 
 export const coorsHandler = async (
     event: APIGatewayProxyEvent,
-    service: ListingService
+    service: DeliveryService
 ): Promise<APIGatewayProxyResult> => {
     try {
         return {

@@ -1,5 +1,4 @@
-import { decimal, pgSchema, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
-import { DATABASE_TABLES } from '../types/constants';
+import { decimal, pgSchema, uuid, varchar } from 'drizzle-orm/pg-core';
 export const paymentSchema = pgSchema('payment_service');
 
 export const transactionTable = paymentSchema.table('transactions', {

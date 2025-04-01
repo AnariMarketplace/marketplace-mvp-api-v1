@@ -13,16 +13,25 @@ export class PaymentService {
         private readonly _stripe: Stripe
     ) {}
 
-    async createPaymentIntent(checkoutRequestId: string): Promise<any> {
+    async createPaymentIntent(checkoutId: string): Promise<any> {
+        //get the total from the checkout object
+        const total = 100;
         const paymentIntent = await this._stripe.paymentIntents.create({
             currency: 'usd',
-            amount: 1000
+            customer: await this.createCustomerPaymentId(),
+            amount: total,
+            metadata: { checkoutId }
         });
         console.log(paymentIntent);
 
         return {
             clientSecret: paymentIntent.client_secret
         };
+    }
+
+    async createCustomerPaymentId() {
+        const customer = this._stripe.customers.create();
+        return (await customer).id;
     }
 
     async processPaymentIntentSuccessEvent(event: any) {

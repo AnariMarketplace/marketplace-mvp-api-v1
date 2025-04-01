@@ -9,3 +9,5 @@ node_modules/
 events/
 
 supabase/
+drizzle-prod/
+drizzle.prod.config.ts

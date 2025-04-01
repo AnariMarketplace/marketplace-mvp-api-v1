@@ -134,7 +134,19 @@ deploy-order:
 	serverless deploy function -f orderService --stage local --region us-west-2
 
 deploy-notification:
-	serverless deploy function -f notificationService --stage local --region us-west-2
+	npx serverless deploy function -f notificationService --stage local --region us-west-2
 
 deploy-all:
-	serverless deploy --stage local --region us-west-2;
+	npx serverless deploy --stage local --region us-west-2;
+
+
+update-db:
+	@echo "$(MAGENTA)Starting local database...$(RESET)"
+	npx supabase start;
+	@echo "$(GREEN)Database locally running...$(RESET)"
+	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
+	npx drizzle-kit generate --config=drizzle.dev.config.ts
+	npx drizzle-kit migrate --config=drizzle.dev.config.ts
+
+deploy-dev:
+	serverless deploy --stage dev --region us-west-2;

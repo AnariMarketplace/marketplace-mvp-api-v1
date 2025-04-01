@@ -3,27 +3,13 @@ info:
   title: Delivery Service API
   version: "1.0.0"
   description: A RESTful API for managing deliveries and pricing requests.
-servers:
-  - url: http://delivery.example.com/v1
+
 tags:
   - name: PricingRequests
   - name: Deliveries
 
 paths:
-  /pricing-requests:
-    get:
-      tags:
-        - PricingRequests
-      summary: Retrieve all pricing requests
-      responses:
-        "200":
-          description: A list of pricing requests.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/PricingRequest"
+  /deliveries/pricing-requests:
     post:
       tags:
         - PricingRequests
@@ -42,7 +28,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/PricingRequest"
 
-  /pricing-requests/{pricingRequestId}:
+  /deliveries/pricing-requests/{pricingRequestId}:
     get:
       tags:
         - PricingRequests
@@ -63,63 +49,8 @@ paths:
                 $ref: "#/components/schemas/PricingRequest"
         "404":
           description: Pricing request not found
-    put:
-      tags:
-        - PricingRequests
-      summary: Update a pricing request
-      parameters:
-        - in: path
-          name: pricingRequestId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PricingRequestInput"
-      responses:
-        "200":
-          description: Pricing request updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PricingRequest"
-        "404":
-          description: Pricing request not found
-    delete:
-      tags:
-        - PricingRequests
-      summary: Delete a pricing request
-      parameters:
-        - in: path
-          name: pricingRequestId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "204":
-          description: Pricing request deleted successfully
-        "404":
-          description: Pricing request not found
 
   /deliveries:
-    get:
-      tags:
-        - Deliveries
-      summary: Retrieve all deliveries
-      responses:
-        "200":
-          description: A list of deliveries.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Delivery"
     post:
       tags:
         - Deliveries
@@ -159,48 +90,135 @@ paths:
                 $ref: "#/components/schemas/Delivery"
         "404":
           description: Delivery not found
-    put:
+    # put:
+    #   tags:
+    #     - Deliveries
+    #   summary: Update a delivery
+    #   parameters:
+    #     - in: path
+    #       name: deliveryId
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: "#/components/schemas/DeliveryInput"
+    #   responses:
+    #     "200":
+    #       description: Delivery updated successfully
+    #       content:
+    #         application/json:
+    #           schema:
+    #             $ref: "#/components/schemas/Delivery"
+    #     "404":
+    #       description: Delivery not found
+
+    # delete:
+    #   tags:
+    #     - Deliveries
+    #   summary: Delete a delivery
+    #   parameters:
+    #     - in: path
+    #       name: deliveryId
+    #       required: true
+    #       schema:
+    #         type: string
+    #         format: uuid
+    #   responses:
+    #     "204":
+    #       description: Delivery deleted successfully
+    #     "404":
+    #       description: Delivery not found
+
+  /deliveries/{id}/decision:
+    post:
       tags:
         - Deliveries
-      summary: Update a delivery
-      parameters:
-        - in: path
-          name: deliveryId
-          required: true
-          schema:
-            type: string
-            format: uuid
+      summary: Selected driver chooses to accept or reject a delivery
+      operationId: choiceDriver
+      description: allows the selected driver to accept or reject a delivery request
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DeliveryInput"
+              type: object
+              properties:
+                deliveryRequestId:
+                  type: string
+                driverId:
+                  type: string
+                choice:
+                  type: string
+                  enum:
+                    - ACCEPTED
+                    - REJECTED
+            example:
+              deliveryId: "123"
+              driverId: "456"
+              choice: ACCEPTED
       responses:
         "200":
-          description: Delivery updated successfully
+          description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Delivery"
-        "404":
-          description: Delivery not found
-    delete:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: string
+              example:
+                status: success
+                data: ""
+
+  /deliveries/{id}/driver-cancel:
+    post:
       tags:
         - Deliveries
-      summary: Delete a delivery
-      parameters:
-        - in: path
-          name: deliveryId
-          required: true
-          schema:
-            type: string
-            format: uuid
+      summary: Cancel a delivery
+      operationId: cancelDelivery
+      description: allows the selected driver to cancel the delivery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                deliveryRequestId:
+                  type: string
+                driverId:
+                  type: string
+                reason:
+                  type: string
+                  enum:
+                    - VEHICLE_ISSUE
+                    -
+            example:
+              deliveryId: "123"
+              driverId: "456"
+              reason: VEHICLE_ISSUE
       responses:
-        "204":
-          description: Delivery deleted successfully
-        "404":
-          description: Delivery not found
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: string
+              example:
+                status: success
+                data: ""
 
 components:
   schemas:
@@ -213,28 +231,65 @@ components:
         recommendedCategory:
           type: string
           enum: [BASE, XL]
-        recommendedVehicleCategory:
+        recommendedVehicleSizeCategory:
           type: string
           enum: [SMALL, MED, LARGE]
-        pickupCoords:
-          type: object
-          properties:
-            lat:
-              type: number
-              format: float
-            lng:
-              type: number
-              format: float
-        dropoffCoords:
-          type: object
-          properties:
-            lat:
-              type: number
-              format: float
-            lng:
-              type: number
-              format: float
-        total:
+        # pickupAddress:
+        #   type: object
+        #   properties:
+        #     lat:
+        #       type: number
+        #       format: float
+        #     lng:
+        #       type: number
+        #       format: float
+        #     street:
+        #       type: string
+        #     city:
+        #       type: string
+        #     state:
+        #       type: string
+        #     postalCode:
+        #       type: string
+        #     country:
+        #       type: string
+        #   required:
+        #     - lat
+        #     - lng
+        #     - street
+        #     - city
+        #     - state
+        #     - postalCode
+        #     - country
+        # dropoffAddress:
+        #   type: object
+        #   properties:
+        #     lat:
+        #       type: number
+        #       format: float
+        #     lng:
+        #       type: number
+        #       format: float
+        #     street:
+        #       type: string
+        #     city:
+        #       type: string
+        #     state:
+        #       type: string
+        #     postalCode:
+        #       type: string
+        #     country:
+        #       type: string
+        #   required:
+        #     - lat
+        #     - lng
+        #     - street
+        #     - city
+        #     - state
+        #     - postalCode
+        #     - country
+
+        totalFee:
           type: number
           format: float
         surcharges:
@@ -271,65 +326,72 @@ components:
       required:
         - id
         - recommendedCategory
-        - pickupCoords
-        - dropoffCoords
-        - total
+        - totalFee
 
     PricingRequestInput:
       type: object
       properties:
-        recommendedCategory:
-          type: string
-          enum: [BASE, XL]
-        recommendedVehicleCategory:
-          type: string
-          enum: [SMALL, MED, LARGE]
-        pickupCoords:
+        pickupAddress:
           type: object
           properties:
-            lat:
-              type: number
-              format: float
-            lng:
-              type: number
-              format: float
-        dropoffCoords:
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postalCode:
+              type: string
+            country:
+              type: string
+          required:
+            - street
+            - city
+            - state
+            - postalCode
+            - country
+        dropoffAddress:
           type: object
           properties:
-            lat:
-              type: number
-              format: float
-            lng:
-              type: number
-              format: float
-        total:
-          type: number
-          format: float
-        surcharges:
+            street:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            postalCode:
+              type: string
+            country:
+              type: string
+          required:
+            - street
+            - city
+            - state
+            - postalCode
+            - country
+        items:
           type: array
           items:
             type: object
             properties:
-              reason:
+              title:
                 type: string
-              fee:
+              baseWeight:
+                type: integer
+              height:
                 type: number
                 format: float
-        distanceCharge:
-          type: number
-          format: float
-        weightCharge:
-          type: number
-          format: float
-        travelDistance:
-          type: integer
-        travelTime:
-          type: integer
+              width:
+                type: number
+                format: float
+              length:
+                type: number
+                format: float
+            required:
+              - title
+              - baseWeight
         selectedPickupTime:
           type: string
-        expiresAt:
-          type: string
-          format: date-time
 
     Delivery:
       type: object
@@ -346,13 +408,11 @@ components:
         status:
           type: string
           enum:
-            [
-              AWAITING_PICKUP,
-              IN_TRANSIT,
-              DELIVERED,
-              ORDER_CANCELLED,
-              DRIVER_CANCELLED,
-            ]
+            - AWAITING_PICKUP
+            - IN_TRANSIT
+            - DELIVERED
+            - ORDER_CANCELLED
+            - DRIVER_CANCELLED
         cancellationReason:
           type: string
         cancelledAt:
@@ -422,13 +482,11 @@ components:
         status:
           type: string
           enum:
-            [
-              AWAITING_PICKUP,
-              IN_TRANSIT,
-              DELIVERED,
-              ORDER_CANCELLED,
-              DRIVER_CANCELLED,
-            ]
+            - AWAITING_PICKUP
+            - IN_TRANSIT
+            - DELIVERED
+            - ORDER_CANCELLED
+            - DRIVER_CANCELLED
         cancellationReason:
           type: string
         cancelledAt:

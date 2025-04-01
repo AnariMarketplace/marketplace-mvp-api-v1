@@ -63,32 +63,28 @@ components:
         clientSecret:
           type: string
           description: The client secret associated with the payment intent.
-        amount:
-          type: number
-          format: float
-          description: The amount to be charged.
+        ephemeralKey:
+          type: string
+          description: the ephemeral key
         currency:
           type: string
           description: Currency code (e.g., USD, EUR).
       required:
         - id
         - clientSecret
-        - amount
         - currency
 
     PaymentIntentInput:
       type: object
       properties:
-        amount:
-          type: number
-          format: float
-          description: The amount to be charged.
-        currency:
+        authId:
           type: string
-          description: Currency code (e.g., USD, EUR).
+          description: optional auth id of the customer making the purchase if authenticated
+        checkoutId:
+          type: string
+          description: id of the checkout created before the payment intent is started
         metadata:
           type: object
           description: Additional metadata for the payment intent.
       required:
-        - amount
-        - currency
+        - checkoutId
