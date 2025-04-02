@@ -112,8 +112,8 @@ init-locals:
 	npx supabase start;
 	@echo "$(GREEN)Database locally running...$(RESET)"
 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
-	npx drizzle-kit generate --config=drizzle.dev.config.ts
-	npx drizzle-kit migrate --config=drizzle.dev.config.ts
+	npx drizzle-kit generate --config=drizzle.local.config.ts
+	npx drizzle-kit migrate --config=drizzle.local.config.ts
 	@echo "$(GREEN)Migration complete...$(RESET)"
 # 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
 # 	stripe listen --events payment_intent.created,customer.created,payment_intent.succeeded,checkout.session.completed,payment_intent.payment_failed \
@@ -145,8 +145,5 @@ update-db:
 	npx supabase start;
 	@echo "$(GREEN)Database locally running...$(RESET)"
 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
-	npx drizzle-kit generate --config=drizzle.dev.config.ts
-	npx drizzle-kit migrate --config=drizzle.dev.config.ts
-
-deploy-dev:
-	serverless deploy --stage dev --region us-west-2;
+	npx drizzle-kit generate --config=drizzle.local.config.ts
+	npx drizzle-kit migrate --config=drizzle.local.config.ts

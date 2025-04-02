@@ -1,28 +1,303 @@
+# service: anar-server
+
+# provider:
+#   name: aws
+#   runtime: nodejs20.x
+#   region: us-west-2
+#   # Default stage is 'local' if not specified
+#   stage: ${opt:stage, 'local'}
+
+#   environment:
+#     # Pick the DATABASE_URL (or other env vars) from custom.env based on the chosen stage
+#     DATABASE_URL: ${self:custom.env.${self:provider.stage}.DATABASE_URL, ''}
+#     SERVICES_URL: ${self:custom.env.${self:provider.stage}.SERVICES_URL, ''}
+
+#   logs:
+#     restApi: true
+#   apiGateway:
+#     cloudWatchRole: false
+
+# plugins:
+#   # Only runs LocalStack when stage=local
+#   - serverless-localstack
+
+# custom:
+#   # Configure localstack to run only for the "local" stage
+#   localstack:
+#     debug: true
+#     autostart: true
+#     host: http://localhost
+#     edgePort: 4566
+#     region: us-west-2
+#     stages:
+#       - local
+
+#   # Define environment variables for each stage
+#   env:
+#     local:
+#       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
+#       SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/okygzzomou/local
+
+#     dev:
+#       DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co
+#       SERVICES_URL: https://api.anarimarketplace.com
+
+#     production:
+#       DATABASE_URL: postgres://aws-user:aws-pass@your-prod-rds.amazonaws.com:5432/proddb
+
+# functions:
+#   listingService:
+#     handler: lambdas/listing-service/app.lambdaHandler
+#     events:
+#       - http:
+#           path: listings
+#           method: post
+#           apiKeyRequired: false
+
+#       - http:
+#           path: listings
+#           method: get
+#           apiKeyRequired: false
+
+#       - http:
+#           path: listings/{id}
+#           method: get
+#           apiKeyRequired: false
+
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - ListingServiceQueue
+#               - Arn
+
+#   paymentService:
+#     handler: lambdas/payment-service/app.lambdaHandler
+#     events:
+#       - http:
+#           path: start-payment-intent
+#           method: post
+#           apiKeyRequired: false
+
+#       - http:
+#           path: payment-service/webhook
+#           method: post
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - PaymentServiceQueue
+#               - Arn
+
+#   deliveryService:
+#     handler: lambdas/delivery-service/app.lambdaHandler
+#     events:
+#       - http:
+#           path: pricing-requests
+#           method: post
+#           apiKeyRequired: false
+
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - DeliveryServiceQueue
+#               - Arn
+
+#   orderService:
+#     handler: lambdas/order-service/app.lambdaHandler
+#     events:
+#       - http:
+#           path: checkout
+#           method: get
+#           apiKeyRequired: false
+
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - OrderServiceQueue
+#               - Arn
+
+#   notificationService:
+#     handler: lambdas/notification-service/app.lambdaHandler
+#     events:
+#       - sqs:
+#           arn:
+#             Fn::GetAtt:
+#               - NotificationServiceQueue
+#               - Arn
+
+# resources:
+#   Resources:
+#     FanoutTopic:
+#       Type: AWS::SNS::Topic
+#       Properties:
+#         TopicName: FanoutTopic
+
+#     ListingServiceQueue:
+#       Type: AWS::SQS::Queue
+#       Properties:
+#         QueueName: ListingServiceQueue
+
+#     PaymentServiceQueue:
+#       Type: AWS::SQS::Queue
+#       Properties:
+#         QueueName: PaymentServiceQueue
+
+#     DeliveryServiceQueue:
+#       Type: AWS::SQS::Queue
+#       Properties:
+#         QueueName: DeliveryServiceQueue
+
+#     OrderServiceQueue:
+#       Type: AWS::SQS::Queue
+#       Properties:
+#         QueueName: OrderServiceQueue
+
+#     NotificationServiceQueue:
+#       Type: AWS::SQS::Queue
+#       Properties:
+#         QueueName: NotificationServiceQueue
+
+#     ListingServiceQueuePolicy:
+#       Type: AWS::SQS::QueuePolicy
+#       Properties:
+#         Queues:
+#           - Ref: ListingServiceQueue
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Sid: AllowSNSMessages
+#               Effect: Allow
+#               Principal: "*"
+#               Action: sqs:SendMessage
+#               Resource: !GetAtt ListingServiceQueue.Arn
+#               Condition:
+#                 ArnEquals:
+#                   aws:SourceArn: !Ref FanoutTopic
+
+#     PaymentServiceQueuePolicy:
+#       Type: AWS::SQS::QueuePolicy
+#       Properties:
+#         Queues:
+#           - Ref: PaymentServiceQueue
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Sid: AllowSNSMessages
+#               Effect: Allow
+#               Principal: "*"
+#               Action: sqs:SendMessage
+#               Resource: !GetAtt PaymentServiceQueue.Arn
+#               Condition:
+#                 ArnEquals:
+#                   aws:SourceArn: !Ref FanoutTopic
+
+#     DeliveryServiceQueuePolicy:
+#       Type: AWS::SQS::QueuePolicy
+#       Properties:
+#         Queues:
+#           - Ref: DeliveryServiceQueue
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Sid: AllowSNSMessages
+#               Effect: Allow
+#               Principal: "*"
+#               Action: sqs:SendMessage
+#               Resource: !GetAtt DeliveryServiceQueue.Arn
+#               Condition:
+#                 ArnEquals:
+#                   aws:SourceArn: !Ref FanoutTopic
+
+#     OrderServiceQueuePolicy:
+#       Type: AWS::SQS::QueuePolicy
+#       Properties:
+#         Queues:
+#           - Ref: OrderServiceQueue
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Sid: AllowSNSMessages
+#               Effect: Allow
+#               Principal: "*"
+#               Action: sqs:SendMessage
+#               Resource: !GetAtt OrderServiceQueue.Arn
+#               Condition:
+#                 ArnEquals:
+#                   aws:SourceArn: !Ref FanoutTopic
+
+#     NotificationServiceQueuePolicy:
+#       Type: AWS::SQS::QueuePolicy
+#       Properties:
+#         Queues:
+#           - Ref: NotificationServiceQueue
+#         PolicyDocument:
+#           Version: "2012-10-17"
+#           Statement:
+#             - Sid: AllowSNSMessages
+#               Effect: Allow
+#               Principal: "*"
+#               Action: sqs:SendMessage
+#               Resource: !GetAtt NotificationServiceQueue.Arn
+#               Condition:
+#                 ArnEquals:
+#                   aws:SourceArn: !Ref FanoutTopic
+
+#     ListingServiceSubscription:
+#       Type: AWS::SNS::Subscription
+#       Properties:
+#         Endpoint: !GetAtt ListingServiceQueue.Arn
+#         Protocol: sqs
+#         TopicArn: !Ref FanoutTopic
+
+#     PaymentServiceSubscription:
+#       Type: AWS::SNS::Subscription
+#       Properties:
+#         Endpoint: !GetAtt PaymentServiceQueue.Arn
+#         Protocol: sqs
+#         TopicArn: !Ref FanoutTopic
+
+#     DeliveryServiceSubscription:
+#       Type: AWS::SNS::Subscription
+#       Properties:
+#         Endpoint: !GetAtt DeliveryServiceQueue.Arn
+#         Protocol: sqs
+#         TopicArn: !Ref FanoutTopic
+
+#     OrderServiceSubscription:
+#       Type: AWS::SNS::Subscription
+#       Properties:
+#         Endpoint: !GetAtt OrderServiceQueue.Arn
+#         Protocol: sqs
+#         TopicArn: !Ref FanoutTopic
+
+#     NotificationServiceSubscription:
+#       Type: AWS::SNS::Subscription
+#       Properties:
+#         Endpoint: !GetAtt NotificationServiceQueue.Arn
+#         Protocol: sqs
+#         TopicArn: !Ref FanoutTopic
+
 service: anar-server
 
 provider:
   name: aws
   runtime: nodejs20.x
   region: us-west-2
-  # Default stage is 'local' if not specified
   stage: ${opt:stage, 'local'}
 
   environment:
-    # Pick the DATABASE_URL (or other env vars) from custom.env based on the chosen stage
     DATABASE_URL: ${self:custom.env.${self:provider.stage}.DATABASE_URL, ''}
     SERVICES_URL: ${self:custom.env.${self:provider.stage}.SERVICES_URL, ''}
 
   logs:
     restApi: true
   apiGateway:
-    cloudWatchRole: false
+    # Removed cloudWatchRole since it's causing issues
+    # and not related to API key settings
 
 plugins:
-  # Only runs LocalStack when stage=local
   - serverless-localstack
 
 custom:
-  # Configure localstack to run only for the "local" stage
   localstack:
     debug: true
     autostart: true
@@ -32,11 +307,10 @@ custom:
     stages:
       - local
 
-  # Define environment variables for each stage
   env:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
-      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/okygzzomou/local
+      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/sgfesj94xl/local
 
     dev:
       DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co
@@ -52,18 +326,15 @@ functions:
       - http:
           path: listings
           method: post
-          apiKeyRequired: false
-
+          private: false
       - http:
           path: listings
           method: get
-          apiKeyRequired: false
-
+          private: false
       - http:
           path: listings/{id}
           method: get
-          apiKeyRequired: false
-
+          private: false
       - sqs:
           arn:
             Fn::GetAtt:
@@ -76,11 +347,11 @@ functions:
       - http:
           path: start-payment-intent
           method: post
-          apiKeyRequired: false
-
+          private: false
       - http:
           path: payment-service/webhook
           method: post
+          private: false
       - sqs:
           arn:
             Fn::GetAtt:
@@ -93,8 +364,7 @@ functions:
       - http:
           path: pricing-requests
           method: post
-          apiKeyRequired: false
-
+          private: false
       - sqs:
           arn:
             Fn::GetAtt:
@@ -107,8 +377,7 @@ functions:
       - http:
           path: checkout
           method: get
-          apiKeyRequired: false
-
+          private: false
       - sqs:
           arn:
             Fn::GetAtt:
