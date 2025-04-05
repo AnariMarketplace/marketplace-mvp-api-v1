@@ -134,7 +134,7 @@ paths:
     #     "404":
     #       description: Delivery not found
 
-  /deliveries/{id}/decision:
+  /deliveries/{id}/driver-decision:
     post:
       tags:
         - Deliveries
@@ -148,7 +148,7 @@ paths:
             schema:
               type: object
               properties:
-                deliveryRequestId:
+                deliveryId:
                   type: string
                 driverId:
                   type: string
@@ -431,8 +431,8 @@ components:
           type: integer
         eta:
           type: integer
-        pickupAddressFull:
-          type: string
+        # pickupAddressFull:
+        #   type: string
         dropoffAddressFull:
           type: string
         oversizedAssistanceRequired:
@@ -440,9 +440,12 @@ components:
         pickupLat:
           type: number
           format: float
+          description: only shown to driver requests
         pickupLng:
           type: number
           format: float
+          description: only shown to driver requests
+
         dropoffLat:
           type: number
           format: float
