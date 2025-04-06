@@ -1,0 +1,1 @@
+ALTER TABLE "listing_service"."listings" ALTER COLUMN "brand" SET DEFAULT '';

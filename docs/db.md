@@ -36,6 +36,7 @@ erDiagram
   text subCategory
   bool priceNegotiable
   bool isFragile
+  string brand
 }
 
 "user-service:users"{

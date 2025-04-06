@@ -11,7 +11,8 @@ export const ListingInputValidationSchema = z.object({
     title: z.string(),
     sellerId: z.string().uuid(),
     purchaseType: z.enum(['BUY', 'RENT']).optional(),
-    price: z.number()
+    price: z.number(),
+    brand: z.string().optional()
 });
 
 export interface ListingOutputDto {
@@ -20,6 +21,7 @@ export interface ListingOutputDto {
     sellerId: string;
     purchaseType: string;
     price: number;
+    brand: string;
 }
 
 export interface Route {

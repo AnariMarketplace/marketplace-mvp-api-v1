@@ -276,6 +276,9 @@ components:
         isFragile:
           type: boolean
           description: Indicates whether the product is fragile.
+        brand:
+          type: string
+          description: Indicates which brand the item belongs to.
       required:
         - id
         - title
@@ -301,6 +304,7 @@ components:
         subCategory: "Audio"
         priceNegotiable: false
         isFragile: false
+        brand: "Gucci"
 
     ListingMetadata:
       type: object
@@ -378,7 +382,10 @@ components:
         isFragile:
           type: boolean
           description: Indicates whether the product is fragile.
-          default: false
+          default: 
+        brand:
+          type: string
+          description: Indicates which brand the item belongs to.
       required:
         - title
         - type
@@ -408,3 +415,4 @@ components:
         subCategory: "Audio"
         priceNegotiable: false
         isFragile: false
+        brand: "Gucci"
