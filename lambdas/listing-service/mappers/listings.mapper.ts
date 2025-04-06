@@ -10,7 +10,8 @@ export function createMetadata() {
         title: String,
         price: Number,
         purchaseType: String,
-        sellerId: String
+        sellerId: String,
+        brand: String
     });
 
     PojosMetadataMap.create<ApiQueryInputDto>(POJO.LISTING_API_QUERY, {
@@ -32,14 +33,16 @@ export function createMetadata() {
         title: String,
         price: Number,
         purchaseType: String,
-        sellerId: String
+        sellerId: String,
+        brand: String
     });
 
     PojosMetadataMap.create<ListingInputDto>(POJO.LISTING_INPUT_DTO, {
         title: String,
         price: Number,
         purchaseType: String,
-        sellerId: String
+        sellerId: String,
+        brand: String
     });
 
     PojosMetadataMap.create<ListingTableSelectSchema>(POJO.LISTING_TABLE_SCHEMA, {
@@ -47,7 +50,8 @@ export function createMetadata() {
         title: String,
         price: Number,
         purchaseType: String,
-        sellerId: String
+        sellerId: String,
+        brand: String
     });
 }
 

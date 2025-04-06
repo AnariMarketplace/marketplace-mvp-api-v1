@@ -38,6 +38,7 @@ export function initServer() {
 }
 
 export const matchRoute = (routes: Route[], method: string, path: string) => {
+    console.log("path " + path)
     const requestSegments = path.split('/').filter(Boolean);
 
     for (const route of routes) {

@@ -7,6 +7,14 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
     // Log the incoming request method/path
     console.log('Incoming request:', event.httpMethod, event.path, event.pathParameters);
 
+    if(!event.httpMethod){
+        console.log('Got empty httpmethod request, likely from lamda initialization ')
+        return {
+            statusCode: 100,
+            body: JSON.stringify({})
+        };
+    }
+
     const matchedRoute = matchRoute(routes, event.httpMethod, event.path);
 
     // If no route is found, return 404

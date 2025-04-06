@@ -8,7 +8,8 @@ export const listingsTable = listingServiceSchema.table('listings', {
     purchaseType: varchar('purchase_type').default('SALE'),
     id: uuid('id').defaultRandom().primaryKey(),
     price: decimal().notNull(),
-    condition: varchar()
+    condition: varchar(),
+    brand: varchar().default('')
 });
 
 export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;
