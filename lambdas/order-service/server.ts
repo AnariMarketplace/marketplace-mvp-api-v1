@@ -1,10 +1,10 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { mapper } from './mappers/payments.mapper';
+import { mapper } from './mappers/orders.mapper';
 import { Route } from './types/types';
 // import { ListingService } from './service/paymentIntent.service';
 // import { createPaymentIntentHandler } from './handlers/getCheckout.handler';
-import { PaymentService } from './service/paymentIntent.service';
+import { PaymentService } from './service/order.service';
 import Stripe from 'stripe';
 import { getCheckoutHandler } from './handlers/getCheckout.handler';
 
@@ -17,7 +17,7 @@ export function initServer() {
     const stripeClient = new Stripe(stripeApiKey);
     const service = new PaymentService(dbConn, mapper, stripeClient);
 
-    const routes: Route[] = [{ method: 'GET', path: '/checkout', handler: getCheckoutHandler }];
+    const routes: Route[] = [{ method: 'POST', path: '/checkout', handler: getCheckoutHandler }];
 
     return {
         service,

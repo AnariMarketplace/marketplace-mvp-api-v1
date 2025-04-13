@@ -1,23 +1,37 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
-import { PaymentService } from '../service/paymentIntent.service';
+import { OrderService } from '../service/order.service';
+import { Checkout, CheckoutInputDto, CheckoutInputValidationSchema } from '../types/types';
+import { mapper } from '../mappers/orders.mapper';
+import { POJO } from '../types/constants';
 
 export const getCheckoutHandler = async (
     event: APIGatewayProxyEvent,
-    service: PaymentService
+    service: OrderService
 ): Promise<APIGatewayProxyResult> => {
     try {
-        // const payload = JSON.parse(event.body ?? '{}');
+        const payload = JSON.parse(event.body ?? '{}');
+        const validatedListing = CheckoutInputValidationSchema.parse(payload);
 
-        // const intent = await service.createPaymentIntent(payload.checkoutRequestId);
+        const checkoutEntity = mapper.map<CheckoutInputDto, Checkout>(
+            validatedListing,
+            POJO.CHECKOUT_INPUT_DTO,
+            POJO.CHECKOUT
+        );
+
+        const checkout = await service.create(checkoutEntity);
+
+        payload.deliveryAddress
 
         const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({})
+            body: JSON.stringify({
+
+            })
         });
         console.log(deliveryPricingRequest);
         const dpr = await deliveryPricingRequest.json();

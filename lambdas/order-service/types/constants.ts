@@ -1,11 +1,11 @@
 export enum POJO {
-    LISTING = 'Listing',
-    LISTING_OUTPUT_DTO = 'ListingOutputDto',
-    LISTING_INPUT_DTO = 'ListingInputDto',
-    LISTING_METADATA = 'ListingMetadata',
-    LISTING_TABLE_SCHEMA = 'ListingTable'
+    CHECKOUT = 'Checkout',
+    CHECKOUT_OUTPUT_DTO = 'CheckoutOutputDto',
+    CHECKOUT_INPUT_DTO = 'CheckoutInputDto',
+    CHECKOUT_METADATA = 'CheckoutMetadata',
+    CHECKOUT_TABLE_SCHEMA = 'CheckoutTable'
 }
 
 export enum DATABASE_TABLES {
-    LISTINGS = 'Listings'
+    CHECKOUT_REQUESTS = 'CheckoutRequests'
 }
