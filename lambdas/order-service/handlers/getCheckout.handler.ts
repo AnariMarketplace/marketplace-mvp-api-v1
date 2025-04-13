@@ -22,7 +22,8 @@ export const getCheckoutHandler = async (
 
         const checkout = await service.create(checkoutEntity);
 
-        payload.deliveryAddress
+        checkout.deliveryAddress
+        checkout.pickupAddress
 
         const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
@@ -30,7 +31,8 @@ export const getCheckoutHandler = async (
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-
+                deliveryAdress: checkout.deliveryAddress,
+                pickupAddress: checkout.pickupAddress
             })
         });
         console.log(deliveryPricingRequest);

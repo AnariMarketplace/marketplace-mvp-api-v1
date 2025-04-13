@@ -11,13 +11,16 @@ import {
 } from 'drizzle-orm/pg-core';
 import { DATABASE_TABLES } from '../types/constants';
 import { sql } from 'drizzle-orm';
+import { string } from 'zod';
 
 export const orderSchema = pgSchema('order_service');
 
 export const checkoutRequestTable = orderSchema.table('checkout', {
     id: uuid('id').defaultRandom().primaryKey(),
     deliveryPricingRequestId: uuid('delivery_pricing_request_id'),
-    subtotal: numeric('delivery_fee', { precision: 10, scale: 2 })
+    subtotal: numeric('delivery_fee', { precision: 10, scale: 2 }),
+    deliveryAddress: varchar('delivery_address'),
+    pickupAddress: varchar('pickup_address')
     // userId: uuid('user_id'),
     // lineItems: jsonb('line_items').notNull(),
     // subtotal: numeric('subtotal', { precision: 10, scale: 2 }).notNull(),

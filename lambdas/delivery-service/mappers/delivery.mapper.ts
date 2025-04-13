@@ -3,7 +3,7 @@ import { pojos, PojosMetadataMap } from '@automapper/pojos';
 import { POJO } from '../types/constants';
 import {
     PricingRequest,
-    PricingRequestInput,
+    PricingRequestInputDto,
     PricingRequestOutputDto,
     Delivery,
     DeliveryInput,
@@ -52,11 +52,13 @@ PojosMetadataMap.create<PricingRequest>(POJO.PRICING_REQUEST, {
 });
 
 // Input DTO mapping (uses nested Address objects)
-PojosMetadataMap.create<PricingRequestInput>(POJO.PRICING_REQUEST_INPUT_DTO, {
-    pickupAddressFull: POJO.ADDRESS,
-    dropoffAddressFull: POJO.ADDRESS,
-    items: Array,
-    selectedPickupTime: String
+PojosMetadataMap.create<PricingRequestInputDto>(POJO.PRICING_REQUEST_INPUT_DTO, {
+    deliveryAddress: String,
+    pickupAddress: String
+    // pickupAddressFull: POJO.ADDRESS,
+    // dropoffAddressFull: POJO.ADDRESS,
+    // items: Array,
+    // selectedPickupTime: String
 });
 
 // Output DTO mapping (same as entity)
@@ -81,8 +83,8 @@ PojosMetadataMap.create<PricingRequestTableSelectSchema>(POJO.PRICING_REQUEST_TA
     id: String,
     recommendedCategory: String,
     recommendedVehicleSizeCategory: String,
-    pickupAddressFull: String,
-    dropoffAddressFull: String,
+    pickupAddress: String,
+    deliveryAddress: String,
     totalFee: Number,
     surcharges: Array,
     distanceCharge: Number,
@@ -193,7 +195,7 @@ export const mapper = createMapper({ strategyInitializer: pojos() });
 
 // Pricing Request mappings
 createMap<PricingRequest, PricingRequestOutputDto>(mapper, POJO.PRICING_REQUEST, POJO.PRICING_REQUEST_OUTPUT_DTO);
-createMap<PricingRequestInput, PricingRequest>(mapper, POJO.PRICING_REQUEST_INPUT_DTO, POJO.PRICING_REQUEST);
+createMap<PricingRequestInputDto, PricingRequest>(mapper, POJO.PRICING_REQUEST_INPUT_DTO, POJO.PRICING_REQUEST);
 createMap<PricingRequestTableSelectSchema, PricingRequest>(
     mapper,
     POJO.PRICING_REQUEST_TABLE_SCHEMA,

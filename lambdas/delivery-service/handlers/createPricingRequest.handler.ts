@@ -4,60 +4,37 @@ import { POJO } from '../types/constants';
 import { DeliveryService } from '../service/delivery.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
-import { PricingRequest, PricingRequestOutputDto } from '../types/types';
+import { PricingRequest, PricingRequestInputDto, PricingRequestInputValidationSchema, PricingRequestOutputDto } from '../types/types';
 
 export const createPricingRequestHandler = async (
     event: APIGatewayProxyEvent,
     service: DeliveryService
 ): Promise<APIGatewayProxyResult> => {
     try {
+
         const payload = JSON.parse(event.body ?? '{}');
+        console.log("hey")
 
-        // const validatedRequest = ListingInputValidationSchema.parse(payload);
+        console.log(payload)
+        const validatedRequest = PricingRequestInputValidationSchema.parse(payload);
 
-        // const listingEntity = mapper.map<ListingInputDto, Listing>(
-        //     validatedListing,
-        //     POJO.LISTING_INPUT_DTO,
-        //     POJO.LISTING
-        // );
+        const pricingRequest = mapper.map<PricingRequestInputDto, PricingRequest>(
+            validatedRequest,
+            POJO.PRICING_REQUEST_INPUT_DTO,
+            POJO.PRICING_REQUEST
+        );
 
-        // const createdListing = await service.create(listingEntity);
-
-        // const responseDto = mapper.map<Listing, ListingOutputDto>(
-        //     createdListing,
-        //     POJO.LISTING,
-        //     POJO.LISTING_OUTPUT_DTO
-        // );
-
-        const mappedPR = mapper.map<PricingRequest, PricingRequestOutputDto>(
-            {
-                id: '7c8b649c-f967-4216-96ed-cb23dbcdd426',
-                recommendedCategory: 'XL',
-                travelTime: 14405,
-                travelDistance: 15,
-                totalFee: 10.5,
-                surcharges: [
-                    {
-                        reason: 'High Congestion Area',
-                        fee: 0.5
-                    }
-                ],
-                distanceCharge: 5.0,
-                weightCharge: 5.0,
-                expiresAt: '',
-                createdAt: '',
-                recommendedVehicleSizeCategory: 'MED',
-                updatedAt: '',
-                selectedPickupTime: '9:00AM'
-            },
+        const createdPricingRequest = await service.create(pricingRequest);
+        
+        const responseDto = mapper.map<PricingRequest, PricingRequestOutputDto>(
+            createdPricingRequest,
             POJO.PRICING_REQUEST,
             POJO.PRICING_REQUEST_OUTPUT_DTO
         );
-        console.log(mappedPR);
 
         return {
             statusCode: 201,
-            body: JSON.stringify(mappedPR)
+            body: JSON.stringify(responseDto)
         };
     } catch (error) {
         // -- Let your main Lambda handler do the final error-to-HTTP-response mapping

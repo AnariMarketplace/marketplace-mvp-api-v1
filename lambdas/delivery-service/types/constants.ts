@@ -1,9 +1,9 @@
 export enum POJO {
     // Pricing Request keys
     PRICING_REQUEST = 'PricingRequest',
-    PRICING_REQUEST_INPUT_DTO = 'PricingRequestInput',
+    PRICING_REQUEST_INPUT_DTO = 'PricingRequestInputDto',
     PRICING_REQUEST_OUTPUT_DTO = 'PricingRequestOutputDto',
-    PRICING_REQUEST_TABLE_SCHEMA = 'PricingRequestTable',
+    PRICING_REQUEST_TABLE_SCHEMA = 'PricingRequestsTable',
 
     // Delivery keys
     DELIVERY = 'Delivery',
