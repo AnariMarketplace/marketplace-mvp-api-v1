@@ -99,7 +99,7 @@ functions:
     events:
       - http:
           path: checkout
-          method: get
+          method: post
           private: false
       - sqs:
           arn:

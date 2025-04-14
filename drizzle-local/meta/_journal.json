@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1743543269944,
-      "tag": "0000_zippy_anita_blake",
+      "when": 1744603709056,
+      "tag": "0000_exotic_boom_boom",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1743956651315,
-      "tag": "0001_wild_senator_kelly",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1743959335241,
-      "tag": "0002_wild_nova",
+      "when": 1744607160726,
+      "tag": "0001_flowery_mikhail_rasputin",
       "breakpoints": true
     }
   ]

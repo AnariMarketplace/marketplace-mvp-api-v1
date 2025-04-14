@@ -1,4 +1,15 @@
-import { pgTable, uuid, text, timestamp, integer, boolean, decimal, json, pgSchema, varchar } from 'drizzle-orm/pg-core';
+import {
+    pgTable,
+    uuid,
+    text,
+    timestamp,
+    integer,
+    boolean,
+    decimal,
+    json,
+    pgSchema,
+    varchar
+} from 'drizzle-orm/pg-core';
 
 export const deliveryServiceSchema = pgSchema('delivery_service');
 export const recommendedCategoryEnum = deliveryServiceSchema.enum('recommended_category', ['BASE', 'XL']);
@@ -9,7 +20,7 @@ export const recommendedVehicleSizeCategoryEnum = deliveryServiceSchema.enum('re
 ]);
 
 export const pricingRequestsTable = deliveryServiceSchema.table('pricing_requests', {
-    id: uuid('id').primaryKey(),
+    id: uuid('id').defaultRandom().primaryKey(),
     recommendedCategory: recommendedCategoryEnum('recommended_category'),
     recommendedVehicleSizeCategory: recommendedVehicleSizeCategoryEnum('recommended_vehicle_size_category'),
     // pickupAddressFull: json('pickup_address_full'),

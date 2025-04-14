@@ -39,6 +39,8 @@ PojosMetadataMap.create<PricingRequest>(POJO.PRICING_REQUEST, {
     id: String,
     recommendedCategory: String,
     recommendedVehicleSizeCategory: String,
+    deliveryAddress: String,
+    pickupAddress: String,
     totalFee: Number,
     surcharges: Array,
     distanceCharge: Number,

@@ -2,29 +2,35 @@ import { createMap, createMapper } from '@automapper/core';
 import { pojos, PojosMetadataMap } from '@automapper/pojos';
 import { POJO } from '../types/constants';
 import { Checkout, CheckoutInputDto, CheckoutOutputDto, DeliveryDetails } from '../types/types';
-import { CheckoutRequestTableSelectSchema} from '../db/schema';
+import { CheckoutRequestTableSelectSchema } from '../db/schema';
 
 export function createMetadata() {
     PojosMetadataMap.create<Checkout>(POJO.CHECKOUT, {
         id: String,
         deliveryPricingRequestId: String,
         subtotal: Number,
+        deliveryAddress: String,
+        pickupAddress: String
         // metadata: POJO.MESSAGE_METADATA,
     });
     PojosMetadataMap.create<CheckoutOutputDto>(POJO.CHECKOUT_OUTPUT_DTO, {
         id: String,
         deliveryDetails: POJO.DELIVERY_DETAILS,
-        subtotal: Number,
+        subtotal: Number
+
         // metadata: POJO.MESSAGE_METADATA
     });
     PojosMetadataMap.create<CheckoutInputDto>(POJO.CHECKOUT_INPUT_DTO, {
         deliveryAddress: String,
+        pickupAddress: String
         // metadata: POJO.MESSAGE_METADATA
     });
     PojosMetadataMap.create<CheckoutRequestTableSelectSchema>(POJO.CHECKOUT_TABLE_SCHEMA, {
         id: String,
         deliveryPricingRequestId: String,
         subtotal: Number,
+        deliveryAddress: String,
+        pickupAddress: String
     });
     PojosMetadataMap.create<DeliveryDetails>(POJO.DELIVERY_DETAILS, {
         recommendedCategory: String,
@@ -37,11 +43,14 @@ export function createMetadata() {
         travelTime: Number,
         selectedPickupTime: String,
         expitesAt: String,
-        createdAt: String, 
-        updatedAt: String,
+        createdAt: String,
+        updatedAt: String
     });
 }
 
 createMetadata();
-
 export const mapper = createMapper({ strategyInitializer: pojos() });
+
+createMap<Checkout, CheckoutOutputDto>(mapper, POJO.CHECKOUT, POJO.CHECKOUT_OUTPUT_DTO);
+createMap<CheckoutInputDto, Checkout>(mapper, POJO.CHECKOUT_INPUT_DTO, POJO.CHECKOUT);
+createMap<CheckoutRequestTableSelectSchema, Checkout>(mapper, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);

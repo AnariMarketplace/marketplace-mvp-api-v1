@@ -41,8 +41,8 @@ CREATE TABLE "delivery_service"."pricing_requests" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"recommended_category" "delivery_service"."recommended_category",
 	"recommended_vehicle_size_category" "delivery_service"."recommended_vehicle_size_category",
-	"pickup_address_full" json,
-	"dropoff_address_full" json,
+	"pickup_address" varchar,
+	"delivery_address" varchar,
 	"total_fee" numeric,
 	"surcharges" json[],
 	"distance_charge" numeric,
@@ -61,7 +61,8 @@ CREATE TABLE "listing_service"."listings" (
 	"purchase_type" varchar DEFAULT 'SALE',
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"price" numeric NOT NULL,
-	"condition" varchar
+	"condition" varchar,
+	"brand" varchar DEFAULT ''
 );
 --> statement-breakpoint
 CREATE TABLE "notification_service"."notifications" (
@@ -75,18 +76,10 @@ CREATE TABLE "notification_service"."notifications" (
 --> statement-breakpoint
 CREATE TABLE "order_service"."checkout" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid,
-	"line_items" jsonb NOT NULL,
-	"subtotal" numeric(10, 2) NOT NULL,
-	"tax_amount" numeric(10, 2) NOT NULL,
-	"shipping_method" varchar(50),
+	"delivery_pricing_request_id" uuid,
 	"delivery_fee" numeric(10, 2),
-	"discount_code" varchar(50),
-	"discount_amount" numeric(10, 2),
-	"total_amount" numeric(10, 2) NOT NULL,
-	"status" varchar(20) DEFAULT 'PENDING' NOT NULL,
-	"created_at" timestamp DEFAULT NOW() NOT NULL,
-	"expires_at" timestamp DEFAULT NOW() + INTERVAL '1 hour'
+	"delivery_address" varchar,
+	"pickup_address" varchar
 );
 --> statement-breakpoint
 CREATE TABLE "order_service"."orders" (

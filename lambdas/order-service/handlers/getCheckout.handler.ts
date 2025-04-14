@@ -13,7 +13,7 @@ export const getCheckoutHandler = async (
     try {
         const payload = JSON.parse(event.body ?? '{}');
         const validatedListing = CheckoutInputValidationSchema.parse(payload);
-
+        console.log(payload);
         const checkoutEntity = mapper.map<CheckoutInputDto, Checkout>(
             validatedListing,
             POJO.CHECKOUT_INPUT_DTO,
@@ -22,16 +22,13 @@ export const getCheckoutHandler = async (
 
         const checkout = await service.create(checkoutEntity);
 
-        checkout.deliveryAddress
-        checkout.pickupAddress
-
         const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                deliveryAdress: checkout.deliveryAddress,
+                deliveryAddress: checkout.deliveryAddress,
                 pickupAddress: checkout.pickupAddress
             })
         });
