@@ -141,7 +141,7 @@ erDiagram
 
 "user-service:drivers_realtime_metadata"{
   uuid driver_id FK
-  bool is_active
+  bool is_on_shift
   timestamp last_active_at
   coords current_lat
   coords current_lng

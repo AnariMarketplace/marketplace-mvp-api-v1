@@ -1,10 +1,10 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import { mapper } from './mappers/payments.mapper';
+import { mapper } from './mappers/orders.mapper';
 import { Route } from './types/types';
 // import { ListingService } from './service/paymentIntent.service';
 // import { createPaymentIntentHandler } from './handlers/getCheckout.handler';
-import { PaymentService } from './service/paymentIntent.service';
+import { OrderService } from './service/order.service';
 import Stripe from 'stripe';
 import { getCheckoutHandler } from './handlers/getCheckout.handler';
 
@@ -12,15 +12,45 @@ import { getCheckoutHandler } from './handlers/getCheckout.handler';
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
     const dbConn = drizzle({ client, casing: 'snake_case' });
-    const stripeApiKey =
-        'sk_test_51QiMYvGUPCXDYpQ6Yq9Z7scA5L027SwwLeEoDqGLACg9YP2Rxf2ZYg9pA8ZGLAEZBsvRcz20yNYRCSzH8Ftr7GWX009Zf7ZLMs';
-    const stripeClient = new Stripe(stripeApiKey);
-    const service = new PaymentService(dbConn, mapper, stripeClient);
+    // const stripeApiKey =
+    //     'sk_test_51QiMYvGUPCXDYpQ6Yq9Z7scA5L027SwwLeEoDqGLACg9YP2Rxf2ZYg9pA8ZGLAEZBsvRcz20yNYRCSzH8Ftr7GWX009Zf7ZLMs';
+    // const stripeClient = new Stripe(stripeApiKey);
+    const service = new OrderService(dbConn, mapper);
 
-    const routes: Route[] = [{ method: 'GET', path: '/checkout', handler: getCheckoutHandler }];
+    const routes: Route[] = [{ method: 'POST', path: '/checkout', handler: getCheckoutHandler }];
 
     return {
         service,
         routes
     };
 }
+
+export const matchRoute = (routes: Route[], method: string, path: string) => {
+    console.log("path " + path)
+    const requestSegments = path.split('/').filter(Boolean);
+
+    for (const route of routes) {
+        if (route.method !== method) continue;
+
+        const routeSegments = route.path.split('/').filter(Boolean);
+
+        if (routeSegments.length !== requestSegments.length) continue;
+
+        const params: Record<string, string> = {};
+
+        const matched = routeSegments.every((segment, i) => {
+            if (segment.startsWith('{') && segment.endsWith('}')) {
+                const paramName = segment.slice(1, -1);
+                params[paramName] = requestSegments[i];
+                return true;
+            }
+            return segment === requestSegments[i];
+        });
+
+        if (matched) {
+            return { route, params };
+        }
+    }
+
+    return null;
+};

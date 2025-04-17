@@ -1,1 +1,0 @@
-ALTER TABLE "listing_service"."listings" ADD COLUMN "brand" varchar;

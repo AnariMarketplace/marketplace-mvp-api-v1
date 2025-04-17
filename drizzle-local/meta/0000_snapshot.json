@@ -1,5 +1,5 @@
 {
-  "id": "f3927c61-2145-4425-bcd3-2a9e6017c601",
+  "id": "eac13c48-d166-4905-b8e8-00dc584b7953",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -165,15 +165,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "pickup_address_full": {
-          "name": "pickup_address_full",
-          "type": "json",
+        "pickup_address": {
+          "name": "pickup_address",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "dropoff_address_full": {
-          "name": "dropoff_address_full",
-          "type": "json",
+        "delivery_address": {
+          "name": "delivery_address",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -289,6 +289,13 @@
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
+        },
+        "brand": {
+          "name": "brand",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "''"
         }
       },
       "indexes": {},
@@ -361,33 +368,9 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "delivery_pricing_request_id": {
+          "name": "delivery_pricing_request_id",
           "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "line_items": {
-          "name": "line_items",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "subtotal": {
-          "name": "subtotal",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "tax_amount": {
-          "name": "tax_amount",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "shipping_method": {
-          "name": "shipping_method",
-          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": false
         },
@@ -397,44 +380,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "discount_code": {
-          "name": "discount_code",
-          "type": "varchar(50)",
+        "delivery_address": {
+          "name": "delivery_address",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "discount_amount": {
-          "name": "discount_amount",
-          "type": "numeric(10, 2)",
+        "pickup_address": {
+          "name": "pickup_address",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
-        },
-        "total_amount": {
-          "name": "total_amount",
-          "type": "numeric(10, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "status": {
-          "name": "status",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'PENDING'"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "NOW()"
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "NOW() + INTERVAL '1 hour'"
         }
       },
       "indexes": {},

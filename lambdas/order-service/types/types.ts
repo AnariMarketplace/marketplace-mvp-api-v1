@@ -1,24 +1,37 @@
 import { z } from 'zod';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
+import { checkoutRequestTable } from '../db/schema';
 
-// export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
+export type CheckoutInputDto = z.infer<typeof CheckoutInputValidationSchema>;
+export type Checkout = typeof checkoutRequestTable.$inferInsert & {};
 
 // export type Listing = typeof listingsTable.$inferInsert & {};
+export const CheckoutInputValidationSchema = z.object({
+    deliveryAddress: z.string(),
+    pickupAddress: z.string()
+    //[] items
+})
 
-// export const ListingInputValidationSchema = z.object({
-//     title: z.string(),
-//     sellerId: z.string().uuid(),
-//     purchaseType: z.enum(['BUY', 'RENT']).optional(),
-//     price: z.number()
-//     // metadata: ListingMetadataInputValidationSchema
-// });
+export interface CheckoutOutputDto {
+    id: string,
+    deliveryDetails: DeliveryDetails,
+    subtotal: number
+}
 
-// export interface PaymentIntentOutputDto {
-//     paymentIntent: string;
-//     ephemeralKey: string;
-//     customerId: string;
-//     publishableKey: string;
-// }
+export interface DeliveryDetails {
+    recommendedCategory: string,
+    recommendedVehicleSizeCategory: string,
+    totalFee: number,
+    surcharges: any[],
+    distanceCharged: number,
+    weightCharge: number,
+    travelDistance: number,
+    travelTime: number,
+    selectedPickupTime: string,
+    expitesAt: string,
+    createdAt: string, 
+    updatedAt: string,
+}
 
 // export type ListingMetadata = z.infer<typeof ListingMetadataInputValidationSchema>;
 

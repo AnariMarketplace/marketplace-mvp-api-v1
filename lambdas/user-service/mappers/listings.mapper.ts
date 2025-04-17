@@ -1,53 +1,42 @@
 import { createMap, createMapper } from '@automapper/core';
 import { pojos, PojosMetadataMap } from '@automapper/pojos';
 import { POJO } from '../types/constants';
-import { ApiQueryInputDto, Listing, ListingInputDto, ListingOutputDto } from '../types/types';
-import { ListingTableSelectSchema } from '../db/schema';
+import { Driver, DriverRealtimeMetadata, DriverRealtimeMetadataInputSchema, VehicleInfo } from '../types/types';
+import { z } from 'zod';
 
 export function createMetadata() {
-    PojosMetadataMap.create<Listing>(POJO.LISTING, {
-        id: String,
-        title: String,
-        price: Number,
-        purchaseType: String,
-        sellerId: String
+    PojosMetadataMap.create<DriverRealtimeMetadata>(POJO.DRIVER_REALTIME_METADATA, {
+        isOnDelivery: Boolean,
+        isOnShift: Boolean,
+        lastActiveAt: String,
+        lastLat: Number,
+        lastLng: Number,
+        driverId: String
     });
 
-    PojosMetadataMap.create<ApiQueryInputDto>(POJO.LISTING_API_QUERY, {
-        searchTitle: String,
-        condition: String,
-        proximityMiles: String,
-        searchMatchMode: String
+    PojosMetadataMap.create<z.infer<typeof DriverRealtimeMetadataInputSchema>>(
+        POJO.DRIVER_REALTIME_METADATA_INPUT_SCHEMA,
+        {
+            isOnDelivery: Boolean,
+            isOnShift: Boolean,
+            lastActiveAt: String,
+            lastLat: Number,
+            lastLng: Number,
+            driverId: String
+        }
+    );
+
+    PojosMetadataMap.create<VehicleInfo>(POJO.VEHICLE_INFO, {
+        make: String,
+        model: String,
+        year: Number,
+        color: String,
+        plateNumber: String
     });
 
-    PojosMetadataMap.create<any>(POJO.LISTING_API_QUERY_UNSTRUCTURED, {
-        searchTitle: String,
-        condition: String,
-        proximityMiles: String,
-        searchMatchMode: String
-    });
-
-    PojosMetadataMap.create<ListingOutputDto>(POJO.LISTING_OUTPUT_DTO, {
-        id: String,
-        title: String,
-        price: Number,
-        purchaseType: String,
-        sellerId: String
-    });
-
-    PojosMetadataMap.create<ListingInputDto>(POJO.LISTING_INPUT_DTO, {
-        title: String,
-        price: Number,
-        purchaseType: String,
-        sellerId: String
-    });
-
-    PojosMetadataMap.create<ListingTableSelectSchema>(POJO.LISTING_TABLE_SCHEMA, {
-        id: String,
-        title: String,
-        price: Number,
-        purchaseType: String,
-        sellerId: String
+    PojosMetadataMap.create<Driver>(POJO.DRIVER, {
+        id: String
+        // vehicleInfo: POJO.VEHICLE_INFO
     });
 }
 
@@ -55,7 +44,9 @@ createMetadata();
 
 export const mapper = createMapper({ strategyInitializer: pojos() });
 
-createMap<Listing, ListingOutputDto>(mapper, POJO.LISTING, POJO.LISTING_OUTPUT_DTO);
-createMap<ListingInputDto, Listing>(mapper, POJO.LISTING_INPUT_DTO, POJO.LISTING);
-createMap<ListingTableSelectSchema, Listing>(mapper, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING);
-createMap(mapper, POJO.LISTING_API_QUERY_UNSTRUCTURED, POJO.LISTING_API_QUERY);
+// createMap<any, Driver>(mapper,    POJO.DRIVER, POJO.DRIVER);
+createMap<z.infer<typeof DriverRealtimeMetadataInputSchema>, DriverRealtimeMetadata>(
+    mapper,
+    POJO.DRIVER_REALTIME_METADATA_INPUT_SCHEMA,
+    POJO.DRIVER_REALTIME_METADATA
+);

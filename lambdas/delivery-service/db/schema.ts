@@ -1,4 +1,15 @@
-import { pgTable, uuid, text, timestamp, integer, boolean, decimal, json, pgSchema } from 'drizzle-orm/pg-core';
+import {
+    pgTable,
+    uuid,
+    text,
+    timestamp,
+    integer,
+    boolean,
+    decimal,
+    json,
+    pgSchema,
+    varchar
+} from 'drizzle-orm/pg-core';
 
 export const deliveryServiceSchema = pgSchema('delivery_service');
 export const recommendedCategoryEnum = deliveryServiceSchema.enum('recommended_category', ['BASE', 'XL']);
@@ -9,12 +20,14 @@ export const recommendedVehicleSizeCategoryEnum = deliveryServiceSchema.enum('re
 ]);
 
 export const pricingRequestsTable = deliveryServiceSchema.table('pricing_requests', {
-    id: uuid('id').primaryKey(),
+    id: uuid('id').defaultRandom().primaryKey(),
     recommendedCategory: recommendedCategoryEnum('recommended_category'),
     recommendedVehicleSizeCategory: recommendedVehicleSizeCategoryEnum('recommended_vehicle_size_category'),
-    pickupAddressFull: json('pickup_address_full'),
-    dropoffAddressFull: json('dropoff_address_full'),
-    totalFee: decimal('total_fee'),
+    // pickupAddressFull: json('pickup_address_full'),
+    // dropoffAddressFull: json('dropoff_address_full'),
+    pickupAddress: varchar('pickup_address'),
+    deliveryAddress: varchar('delivery_address'),
+    totalFee: decimal('total_fee').$type<number>(),
     surcharges: json('surcharges').array(), // Array of JSON objects like {reason, fee}
     distanceCharge: decimal('distance_charge'),
     weightCharge: decimal('weight_charge'),

@@ -1,0 +1,1 @@
+ALTER TABLE "user_service"."driver_realtime_metadata" RENAME COLUMN "user_id" TO "driver_id";

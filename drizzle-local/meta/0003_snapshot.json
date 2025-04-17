@@ -1,6 +1,6 @@
 {
-  "id": "bd909a29-0a08-4e93-b9f6-746ea28f38a3",
-  "prevId": "e450b240-d4e5-41d7-808f-2072bdc4a894",
+  "id": "fddc43d3-0412-4df4-8e03-98f5ca78c79f",
+  "prevId": "bd909a29-0a08-4e93-b9f6-746ea28f38a3",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -500,8 +500,8 @@
       "name": "driver_realtime_metadata",
       "schema": "user_service",
       "columns": {
-        "user_id": {
-          "name": "user_id",
+        "driver_id": {
+          "name": "driver_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
