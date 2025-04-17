@@ -1,35 +1,31 @@
 import { z } from 'zod';
-import { listingsTable } from '../db/schema';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
+import { driverRealtimeMetadataTable, driversTable } from '../db/schema';
 
-export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
-export type ApiQueryInputDto = z.infer<typeof ApiQueryValidationSchema>;
-export type Listing = typeof listingsTable.$inferInsert & {};
-
-export const ListingInputValidationSchema = z.object({
-    title: z.string(),
-    sellerId: z.string().uuid(),
-    purchaseType: z.enum(['BUY', 'RENT']).optional(),
-    price: z.number()
-});
-
-export interface ListingOutputDto {
-    id: string;
-    title: string;
-    sellerId: string;
-    purchaseType: string;
-    price: number;
-}
+export interface DriverOutputDto extends Driver {}
 
 export interface Route {
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE';
+    method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
     path: string;
-    handler: (event: APIGatewayProxyEvent, service: any) => Promise<APIGatewayProxyResult>;
+    handler: (event: APIGatewayProxyEvent, service: any, authClient?: any) => Promise<APIGatewayProxyResult>;
 }
 
-export const ApiQueryValidationSchema = z.object({
-    searchTitle: z.string().optional(),
-    searchMatchMode: z.enum(['FUZZY', 'STRICT']).optional().default('STRICT'),
-    condition: z.enum(['NEW', 'GREAT', 'FAIR', 'POOR']).optional(),
-    proximityMiles: z.enum(['lt_25', 'mt_25']).default('lt_25')
+export const DriverRealtimeMetadataInputSchema = z.object({
+    isOnShift: z.boolean().optional(),
+    lastActiveAt: z.string().optional(),
+    lastLat: z.number().optional(),
+    lastLng: z.number().optional(),
+    isOnDelivery: z.boolean().optional(),
+    driverId: z.string().uuid()
 });
+
+export type VehicleInfo = {
+    make: string;
+    model: string;
+    year: number;
+    color: string;
+    plateNumber: string;
+};
+
+export type Driver = typeof driversTable.$inferSelect;
+export type DriverRealtimeMetadata = typeof driverRealtimeMetadataTable.$inferSelect;

@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { initServer } from './server';
 
-const { routes, service } = initServer();
+const { routes, service, authClient } = initServer();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Log the incoming request method/path
@@ -20,7 +20,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
 
     try {
         // Delegate handling to the matched route
-        return await route.handler(event, service);
+        return await route.handler(event, service, authClient);
     } catch (err: any) {
         // Log and return the error
         console.error('Error handling request:', err);

@@ -115,7 +115,13 @@ functions:
             Fn::GetAtt:
               - NotificationServiceQueue
               - Arn
-
+  userService:
+    handler: lambdas/user-service/app.lambdaHandler
+    events:
+      - http:
+          path: drivers/realtime-metadata
+          method: patch
+          private: false
 resources:
   Resources:
     FanoutTopic:

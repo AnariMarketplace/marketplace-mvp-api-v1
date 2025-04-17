@@ -5,7 +5,11 @@ export enum POJO {
     LISTING_METADATA = 'ListingMetadata',
     LISTING_TABLE_SCHEMA = 'ListingTable',
     LISTING_API_QUERY = 'ListingApiQuery',
-    LISTING_API_QUERY_UNSTRUCTURED = 'ListingApiQueryUnstructured'
+    LISTING_API_QUERY_UNSTRUCTURED = 'ListingApiQueryUnstructured',
+    DRIVER_REALTIME_METADATA = 'DriverRealtimeMetadata',
+    VEHICLE_INFO = 'VehicleInfo',
+    DRIVER = 'Driver',
+    DRIVER_REALTIME_METADATA_INPUT_SCHEMA = 'DRIVER_REALTIME_METADATA_INPUT_SCHEMA'
 }
 
 // export enum DATABASE_TABLES {

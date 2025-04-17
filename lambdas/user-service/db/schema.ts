@@ -1,12 +1,16 @@
-import { DATABASE_TABLES } from '@anarimarketplace/constants';
-import { decimal, integer, pgSchema, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+    boolean,
+    doublePrecision,
+    integer,
+    pgSchema,
+    pgTable as table,
+    text,
+    timestamp,
+    uuid,
+    varchar
+} from 'drizzle-orm/pg-core';
 
 export const userSchema = pgSchema('user_service');
-
-export const listingsTable = userSchema.table('users', {
-    id: uuid('id').defaultRandom().primaryKey(),
-    authSystemId: varchar('auth_system_id')
-});
 
 export const sellersTable = userSchema.table('sellers', {
     id: uuid('id').defaultRandom().primaryKey(),
@@ -19,4 +23,22 @@ export const sellersScheduleTable = userSchema.table('sellers_schedule', {
     endTime: varchar('end_time')
 });
 
-export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;
+export const driversTable = userSchema.table('drivers', {
+    id: uuid('id').defaultRandom().primaryKey(),
+    firstName: text('first_name'),
+    lastName: text('last_name'),
+    authId: varchar('auth_id')
+});
+
+export const driverRealtimeMetadataTable = userSchema.table('driver_realtime_metadata', {
+    driverId: uuid('driver_id'),
+    isOnShift: boolean('is_on_shift'),
+    lastActiveAt: timestamp('last_active_at'),
+    lastLat: doublePrecision('last_lat'),
+    lastLng: doublePrecision('last_lng'),
+    locationLastUpdatedAt: timestamp('location_last_updated_at'),
+    isOnDelivery: boolean('is_on_delivery')
+});
+
+export type DriverTableSelectSchema = typeof driversTable.$inferSelect;
+export type DriverRealtimeMetadataTableSelectSchema = typeof driverRealtimeMetadataTable.$inferSelect;
