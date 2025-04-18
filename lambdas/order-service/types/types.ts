@@ -1,21 +1,33 @@
 import { z } from 'zod';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
-import { checkoutRequestTable } from '../db/schema';
+import { checkoutSessionTable } from '../db/schema';
 
-export type CheckoutInputDto = z.infer<typeof CheckoutInputValidationSchema>;
-export type Checkout = typeof checkoutRequestTable.$inferInsert & {};
+export type CheckoutSessionInputDto = z.infer<typeof CheckoutInputValidationSchema>;
+export type CheckoutSession = typeof checkoutSessionTable.$inferInsert & {};
 
 // export type Listing = typeof listingsTable.$inferInsert & {};
 export const CheckoutInputValidationSchema = z.object({
     deliveryAddress: z.string(),
-    pickupAddress: z.string()
-    //[] items
+    listingIds: z.array(z.string()),
+    customerInfo: z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string().email(),
+        phone: z.string()
+    }),
+    orderNotes: z.string(),
+    pickupTime: z.string()
 })
 
 export interface CheckoutOutputDto {
     id: string,
     deliveryDetails: DeliveryDetails,
     subtotal: number
+}
+
+export interface DeliveryDetails {
+    recommendedCategory: string,
+    recommendedVehicleSizeCategory: string,
 }
 
 export interface DeliveryDetails {
@@ -28,7 +40,7 @@ export interface DeliveryDetails {
     travelDistance: number,
     travelTime: number,
     selectedPickupTime: string,
-    expitesAt: string,
+    expiresAt: string,
     createdAt: string, 
     updatedAt: string,
 }

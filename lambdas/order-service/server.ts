@@ -6,7 +6,7 @@ import { Route } from './types/types';
 // import { createPaymentIntentHandler } from './handlers/getCheckout.handler';
 import { OrderService } from './service/order.service';
 import Stripe from 'stripe';
-import { getCheckoutHandler } from './handlers/getCheckout.handler';
+import { postCheckoutSessionHandler as postCheckoutSessionHandler } from './handlers/postCheckoutSessionHandler';
 
 //Setup server
 export function initServer() {
@@ -17,7 +17,7 @@ export function initServer() {
     // const stripeClient = new Stripe(stripeApiKey);
     const service = new OrderService(dbConn, mapper);
 
-    const routes: Route[] = [{ method: 'POST', path: '/checkout', handler: getCheckoutHandler }];
+    const routes: Route[] = [{ method: 'POST', path: '/checkout-session', handler: postCheckoutSessionHandler }];
 
     return {
         service,

@@ -2,25 +2,25 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
 import { OrderService } from '../service/order.service';
-import { Checkout, CheckoutInputDto, CheckoutInputValidationSchema } from '../types/types';
+import { CheckoutSession, CheckoutSessionInputDto, CheckoutInputValidationSchema } from '../types/types';
 import { mapper } from '../mappers/orders.mapper';
 import { POJO } from '../types/constants';
 
-export const getCheckoutHandler = async (
+export const postCheckoutSessionHandler = async (
     event: APIGatewayProxyEvent,
     service: OrderService
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
-        const validatedListing = CheckoutInputValidationSchema.parse(payload);
+        const validatedCheckoutSessionInput = CheckoutInputValidationSchema.parse(payload);
         console.log(payload);
-        const checkoutEntity = mapper.map<CheckoutInputDto, Checkout>(
-            validatedListing,
+        const checkoutSessionEntity = mapper.map<CheckoutSessionInputDto, CheckoutSession>(
+            validatedCheckoutSessionInput,
             POJO.CHECKOUT_INPUT_DTO,
             POJO.CHECKOUT
         );
 
-        const checkout = await service.create(checkoutEntity);
+        const checkoutSession = await service.create(checkoutSessionEntity);
 
         const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
@@ -28,8 +28,22 @@ export const getCheckoutHandler = async (
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                deliveryAddress: checkout.deliveryAddress,
-                pickupAddress: checkout.pickupAddress
+                deliveryAddress: checkoutSession.deliveryAddress,
+
+                pickupAddress: checkoutSession.pickupAddress
+            })
+        });
+        
+
+        const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                deliveryAddress: checkoutSession.deliveryAddress,
+
+                pickupAddress: checkoutSession.pickupAddress
             })
         });
         console.log(deliveryPricingRequest);
