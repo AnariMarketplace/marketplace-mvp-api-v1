@@ -1,11 +1,11 @@
 import { createMap, createMapper } from '@automapper/core';
 import { pojos, PojosMetadataMap } from '@automapper/pojos';
 import { POJO } from '../types/constants';
-import { Checkout, CheckoutInputDto, CheckoutOutputDto, DeliveryDetails } from '../types/types';
-import { CheckoutRequestTableSelectSchema } from '../db/schema';
+import { CheckoutSession, CheckoutSessionInputDto, CheckoutOutputDto, DeliveryDetails } from '../types/types';
+import { CheckoutSessionTableSelectSchema } from '../db/schema';
 
 export function createMetadata() {
-    PojosMetadataMap.create<Checkout>(POJO.CHECKOUT, {
+    PojosMetadataMap.create<CheckoutSession>(POJO.CHECKOUT, {
         id: String,
         deliveryPricingRequestId: String,
         subtotal: Number,
@@ -20,12 +20,20 @@ export function createMetadata() {
 
         // metadata: POJO.MESSAGE_METADATA
     });
-    PojosMetadataMap.create<CheckoutInputDto>(POJO.CHECKOUT_INPUT_DTO, {
+    PojosMetadataMap.create<CheckoutSessionInputDto>(POJO.CHECKOUT_INPUT_DTO, {
         deliveryAddress: String,
-        pickupAddress: String
-        // metadata: POJO.MESSAGE_METADATA
+        listingIds: Array,
+        customerInfo: POJO.CUSTOMER_INFO,
+        orderNotes: String,
+        pickupTime: String
     });
-    PojosMetadataMap.create<CheckoutRequestTableSelectSchema>(POJO.CHECKOUT_TABLE_SCHEMA, {
+    PojosMetadataMap.create<{id: string, name: string, email: string, phone: string}>(POJO.CUSTOMER_INFO, {
+        id: String,
+        name: String,
+        email: String,
+        phone: String
+    });
+    PojosMetadataMap.create<CheckoutSessionTableSelectSchema>(POJO.CHECKOUT_TABLE_SCHEMA, {
         id: String,
         deliveryPricingRequestId: String,
         subtotal: Number,
@@ -42,7 +50,7 @@ export function createMetadata() {
         travelDistance: Number,
         travelTime: Number,
         selectedPickupTime: String,
-        expitesAt: String,
+        expiresAt: String,
         createdAt: String,
         updatedAt: String
     });
@@ -51,6 +59,6 @@ export function createMetadata() {
 createMetadata();
 export const mapper = createMapper({ strategyInitializer: pojos() });
 
-createMap<Checkout, CheckoutOutputDto>(mapper, POJO.CHECKOUT, POJO.CHECKOUT_OUTPUT_DTO);
-createMap<CheckoutInputDto, Checkout>(mapper, POJO.CHECKOUT_INPUT_DTO, POJO.CHECKOUT);
-createMap<CheckoutRequestTableSelectSchema, Checkout>(mapper, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);
+createMap<CheckoutSession, CheckoutOutputDto>(mapper, POJO.CHECKOUT, POJO.CHECKOUT_OUTPUT_DTO);
+createMap<CheckoutSessionInputDto, CheckoutSession>(mapper, POJO.CHECKOUT_INPUT_DTO, POJO.CHECKOUT);
+createMap<CheckoutSessionTableSelectSchema, CheckoutSession>(mapper, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);

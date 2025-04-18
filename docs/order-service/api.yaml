@@ -6,105 +6,41 @@ info:
 servers:
   - url: http://order.example.com/v1
 tags:
-  - name: Checkouts
+  - name: Checkout-Session
   - name: Orders
 
 paths:
-  /checkouts:
+  /checkout-session:
     get:
       tags:
-        - Checkouts
-      summary: Retrieve all checkouts
+        - Checkout-Session
+      summary: Retrieves the most recent, within expiration, and unfinished checkout-session if any are available
       responses:
         "200":
-          description: A list of checkout records.
+          description: A checkout-session object which holds information relevant to checkout
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Checkout"
+                  $ref: "#/components/schemas/CheckoutSession"
     post:
       tags:
-        - Checkouts
-      summary: Create a new checkout
+        - Checkout-Session
+      summary: Create a new checkout-session
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CheckoutInput"
+              $ref: "#/components/schemas/CheckoutSessionInput"
       responses:
         "201":
-          description: Checkout created successfully
+          description: Checkout-session created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Checkout"
-
-  /checkouts/{checkoutId}:
-    get:
-      tags:
-        - Checkouts
-      summary: Retrieve a specific checkout
-      parameters:
-        - in: path
-          name: checkoutId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "200":
-          description: Checkout found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Checkout"
-        "404":
-          description: Checkout not found
-    put:
-      tags:
-        - Checkouts
-      summary: Update an existing checkout
-      parameters:
-        - in: path
-          name: checkoutId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CheckoutInput"
-      responses:
-        "200":
-          description: Checkout updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Checkout"
-        "404":
-          description: Checkout not found
-    delete:
-      tags:
-        - Checkouts
-      summary: Delete a checkout
-      parameters:
-        - in: path
-          name: checkoutId
-          required: true
-          schema:
-            type: string
-            format: uuid
-      responses:
-        "204":
-          description: Checkout deleted successfully
-        "404":
-          description: Checkout not found
+                $ref: "#/components/schemas/CheckoutSession"
 
   /orders:
     get:
@@ -204,7 +140,7 @@ paths:
 
 components:
   schemas:
-    Checkout:
+    CheckoutSession:
       type: object
       properties:
         id:
@@ -250,7 +186,7 @@ components:
         - createdAt
         - updatedAt
 
-    CheckoutInput:
+    CheckoutSessionInput:
       type: object
       properties:
         listingIds:
@@ -261,25 +197,20 @@ components:
         customerInfo:
           type: object
           properties:
+            id:
+              type: string
             name:
               type: string
             email:
               type: string
             phone:
               type: string
-        status:
-          type: string
-          enum: [PENDING, COMPLETED]
         orderNotes:
           type: string
         deliveryAddress:
           type: string
-        deliveryPricingRequestId:
+        pickupTime:
           type: string
-          format: uuid
-        subtotal:
-          type: number
-          format: float
       required:
         - listingIds
         - status
