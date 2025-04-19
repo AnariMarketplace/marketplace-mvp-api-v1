@@ -12,9 +12,15 @@ import {
 
 export const userSchema = pgSchema('user_service');
 
+export const usersTable = userSchema.table('users', {
+    id: uuid('id').defaultRandom().primaryKey(),
+    authId: varchar('auth_id')
+});
+
 export const sellersTable = userSchema.table('sellers', {
     id: uuid('id').defaultRandom().primaryKey(),
-    pageName: varchar('page_name')
+    pageName: varchar('page_name'),
+    pickupAddress: text('pickup_address')
 });
 
 export const sellersScheduleTable = userSchema.table('sellers_schedule', {

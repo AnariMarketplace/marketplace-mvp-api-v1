@@ -1,0 +1,1 @@
+ALTER TABLE "order_service"."checkout_session" RENAME COLUMN "customer_info" TO "customer_id";

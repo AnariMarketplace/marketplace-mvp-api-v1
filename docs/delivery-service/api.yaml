@@ -46,7 +46,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PricingRequest"
+                $ref: "#/components/schemas/PricingRequestOutput"
         "404":
           description: Pricing request not found
 
@@ -231,9 +231,7 @@ components:
         recommendedCategory:
           type: string
           enum: [BASE, XL]
-        recommendedVehicleSizeCategory:
-          type: string
-          enum: [SMALL, MED, LARGE]
+
         # pickupAddress:
         #   type: object
         #   properties:
@@ -328,6 +326,37 @@ components:
         - recommendedCategory
         - totalFee
 
+    PricingRequestOutput:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [BASE, XL]
+        weightCharges:
+          type: number
+          format: float
+        distanceCharges:
+          type: number
+          format: float
+        pickupTime:
+          type: string
+          format: date-time
+        surcharges:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              amount:
+                type: number
+                format: float
+        estimatedTravelTime:
+          type: string
+          format: date-time
+        total:
+          type: number
+          format: float
     PricingRequestInput:
       type: object
       properties:

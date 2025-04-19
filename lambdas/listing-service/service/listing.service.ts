@@ -1,5 +1,5 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { eq, like, sql } from 'drizzle-orm';
+import { eq, inArray, like, sql } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
 import { listingsTable, ListingTableSelectSchema } from '../db/schema';
 import { ApiQueryInputDto, Listing } from '../types/types';
@@ -14,8 +14,13 @@ export class ListingService {
         return this._mapper.map(insertedRow, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING);
     }
 
-    async getAllByQuery(query: ApiQueryInputDto): Promise<Listing[]> {
+    async getById(id: string): Promise<Listing> {
+        const [listing] = await this._dbClient.select().from(listingsTable).where(eq(listingsTable.id, id));
 
+        return this._mapper.map(listing, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING);
+    }
+
+    async getAllByQuery(query: ApiQueryInputDto): Promise<Listing[]> {
         let sqlQuery = this._dbClient.select().from(listingsTable).where(eq(listingsTable.condition, 'NEW')).$dynamic();
         console.log(query);
         if (query.searchTitle) {
@@ -37,5 +42,24 @@ export class ListingService {
 
         // Map each DB row to your Listing shape
         return res.map((row) => this._mapper.map(row, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING));
+    }
+
+    async getListingOrderContextByListingIds(listingIds: string) {
+        console.log('listingIds', listingIds);
+        const res = await this._dbClient
+            .select({
+                sellerId: listingsTable.sellerId,
+                listingId: listingsTable.id,
+                weight: listingsTable.weight,
+                height: listingsTable.height,
+                width: listingsTable.width,
+                length: listingsTable.length
+            })
+            .from(listingsTable)
+            .where(eq(listingsTable.id, listingIds))
+            .limit(1);
+
+        console.log('res', res);
+        return res;
     }
 }

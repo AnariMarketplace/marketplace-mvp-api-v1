@@ -10,7 +10,8 @@ export function createMetadata() {
         deliveryPricingRequestId: String,
         subtotal: Number,
         deliveryAddress: String,
-        pickupAddress: String
+        pickupAddress: String,
+        customerId: String
         // metadata: POJO.MESSAGE_METADATA,
     });
     PojosMetadataMap.create<CheckoutOutputDto>(POJO.CHECKOUT_OUTPUT_DTO, {
@@ -23,11 +24,11 @@ export function createMetadata() {
     PojosMetadataMap.create<CheckoutSessionInputDto>(POJO.CHECKOUT_INPUT_DTO, {
         deliveryAddress: String,
         listingIds: Array,
-        customerInfo: POJO.CUSTOMER_INFO,
+        customerId: String,
         orderNotes: String,
         pickupTime: String
     });
-    PojosMetadataMap.create<{id: string, name: string, email: string, phone: string}>(POJO.CUSTOMER_INFO, {
+    PojosMetadataMap.create<{ id: string; name: string; email: string; phone: string }>(POJO.CUSTOMER_INFO, {
         id: String,
         name: String,
         email: String,
@@ -38,7 +39,8 @@ export function createMetadata() {
         deliveryPricingRequestId: String,
         subtotal: Number,
         deliveryAddress: String,
-        pickupAddress: String
+        pickupAddress: String,
+        customerId: String
     });
     PojosMetadataMap.create<DeliveryDetails>(POJO.DELIVERY_DETAILS, {
         recommendedCategory: String,

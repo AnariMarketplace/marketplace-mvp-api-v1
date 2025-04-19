@@ -14,6 +14,7 @@
         "test": "npm run compile && npm run unit"
     },
     "dependencies": {
+        "@anarimarketplace/auth-lib": "^0.0.3",
         "@anarimarketplace/custom-errors": "^0.0.1",
         "@automapper/core": "^8.8.1",
         "@automapper/pojos": "^8.8.1",

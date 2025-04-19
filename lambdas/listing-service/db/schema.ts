@@ -9,7 +9,11 @@ export const listingsTable = listingServiceSchema.table('listings', {
     id: uuid('id').defaultRandom().primaryKey(),
     price: decimal().notNull(),
     condition: varchar(),
-    brand: varchar().default('')
+    brand: varchar().default(''),
+    weight: decimal(),
+    height: decimal(),
+    width: decimal(),
+    length: decimal()
 });
 
 export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;

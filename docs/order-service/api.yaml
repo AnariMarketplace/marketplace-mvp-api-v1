@@ -10,20 +10,7 @@ tags:
   - name: Orders
 
 paths:
-  /checkout-session:
-    get:
-      tags:
-        - Checkout-Session
-      summary: Retrieves the most recent, within expiration, and unfinished checkout-session if any are available
-      responses:
-        "200":
-          description: A checkout-session object which holds information relevant to checkout
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/CheckoutSession"
+  /checkout-session-init:
     post:
       tags:
         - Checkout-Session
@@ -33,10 +20,40 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CheckoutSessionInput"
+              type: object
+              properties:
+                listingIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
       responses:
         "201":
-          description: Checkout-session created successfully
+          description: Checkout-session created successfully and id is returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  checkoutSessionId:
+                    type: string
+                    format: uuid
+
+  /checkout-session/{checkoutSessionId}/summary:
+    post:
+      tags:
+        - Checkout-Session
+      summary: Retrieve a summary of the checkout-session
+      parameters:
+        - in: path
+          name: checkoutSessionId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: A summary of the checkout-session
           content:
             application/json:
               schema:
@@ -132,6 +149,7 @@ paths:
           schema:
             type: string
             format: uuid
+
       responses:
         "204":
           description: Order deleted successfully
@@ -151,31 +169,47 @@ components:
           items:
             type: string
             format: uuid
-        customerInfo:
-          type: object
-          properties:
-            name:
-              type: string
-            email:
-              type: string
-            phone:
-              type: string
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-        status:
-          type: string
-          enum: [PENDING, COMPLETED]
         orderNotes:
           type: string
         deliveryAddress:
           type: string
-        deliveryPricingRequestId:
-          type: string
-          format: uuid
+        deliveryDetails:
+          type: object
+          properties:
+            category:
+              type: string
+              enum: [BASE, XL]
+            weightCharges:
+              type: number
+              format: float
+            distanceCharges:
+              type: number
+              format: float
+            pickupTime:
+              type: string
+              format: date-time
+            surcharges:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  amount:
+                    type: number
+                    format: float
+            estimatedTravelTime:
+              type: string
+              format: date-time
+            total:
+              type: number
+              format: float
         subtotal:
           type: number
           format: float
@@ -189,22 +223,6 @@ components:
     CheckoutSessionInput:
       type: object
       properties:
-        listingIds:
-          type: array
-          items:
-            type: string
-            format: uuid
-        customerInfo:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-            email:
-              type: string
-            phone:
-              type: string
         orderNotes:
           type: string
         deliveryAddress:

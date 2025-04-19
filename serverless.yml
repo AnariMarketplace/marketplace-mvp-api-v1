@@ -32,7 +32,7 @@ custom:
   env:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
-      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/sgfesj94xl/local
+      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/j1uzsmrogh/local
 
     dev:
       DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co
@@ -58,6 +58,10 @@ functions:
           path: listings/{id}
           method: get
           private: false
+      - http:
+          path: listings/order-context
+          method: get
+          private: true
       - sqs:
           arn:
             Fn::GetAtt:
@@ -98,7 +102,11 @@ functions:
     handler: lambdas/order-service/app.lambdaHandler
     events:
       - http:
-          path: checkout
+          path: checkout-session/{id}/summary
+          method: post
+          private: false
+      - http:
+          path: init-checkout-session
           method: post
           private: false
       - sqs:
@@ -121,6 +129,10 @@ functions:
       - http:
           path: drivers/realtime-metadata
           method: patch
+          private: false
+      - http:
+          path: sellers/{id}/info
+          method: get
           private: false
 resources:
   Resources:

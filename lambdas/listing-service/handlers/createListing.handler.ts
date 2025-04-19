@@ -6,17 +6,25 @@ import { ListingService } from '../service/listing.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
-
+import { verifyToken } from '@clerk/backend';
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 export const createListingHandler = async (
     event: APIGatewayProxyEvent,
     service: ListingService,
-    snsClient: SNSClient
+    snsClient: SNSClient,
+    authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
     try {
+        const token = authClient.requireAuthToken(event.multiValueHeaders);
+        const user = await authClient.getUserFromToken(token);
+        console.log(user);
+
         const payload = JSON.parse(event.body ?? '{}');
         console.log(payload);
-        const validatedListing = ListingInputValidationSchema.parse(payload);
 
+        payload.sellerId = user.privateMetadata.sellerId;
+
+        const validatedListing = ListingInputValidationSchema.parse(payload);
         const listingEntity = mapper.map<ListingInputDto, Listing>(
             validatedListing,
             POJO.LISTING_INPUT_DTO,

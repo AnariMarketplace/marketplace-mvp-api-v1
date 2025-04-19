@@ -15,17 +15,17 @@ import { sql } from 'drizzle-orm';
 export const orderSchema = pgSchema('order_service');
 export const checkoutSessionTable = orderSchema.table('checkout_session', {
     id: uuid('id').defaultRandom().primaryKey(),
-    listingIds: jsonb('listing_ids').notNull(),
-    customerInfo: jsonb('customer_info').notNull(),
-    deliveryPricingRequestId: uuid('delivery_pricing_request_id').notNull(),
-    subtotal: numeric('subtotal', { precision: 10, scale: 2 }).notNull(),
-    deliveryAddress: varchar('delivery_address', { length: 255 }).notNull(),
-    pickupAddress: varchar('pickup_address', { length: 255 }).notNull(),
-    pickupTime: timestamp('pickup_time').notNull(),
-    orderNotes: text('order_notes').notNull().default(''),
-    createdAt: timestamp('created_at').notNull().default(sql`now()`),
-    updatedAt: timestamp('updated_at').notNull().default(sql`now()`),
-  });
+    listingIds: jsonb('listing_ids'),
+    customerId: uuid('customer_id'),
+    deliveryPricingRequestId: uuid('delivery_pricing_request_id'),
+    subtotal: numeric('subtotal', { precision: 10, scale: 2 }),
+    deliveryAddress: varchar('delivery_address', { length: 255 }),
+    pickupAddress: varchar('pickup_address', { length: 255 }),
+    pickupTime: timestamp('pickup_time'),
+    orderNotes: text('order_notes').default(''),
+    createdAt: timestamp('created_at').default(sql`now()`),
+    updatedAt: timestamp('updated_at').default(sql`now()`)
+});
 
 export const ordersTable = orderSchema.table('orders', {
     // id: ,

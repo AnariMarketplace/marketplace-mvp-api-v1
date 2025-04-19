@@ -7,7 +7,8 @@ import { Route } from './types/types';
 import { OrderService } from './service/order.service';
 import Stripe from 'stripe';
 import { postCheckoutSessionHandler as postCheckoutSessionHandler } from './handlers/postCheckoutSessionHandler';
-
+import { postInitCheckoutSessionHandler } from './handlers/postInitCheckoutSession';
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 //Setup server
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
@@ -16,17 +17,25 @@ export function initServer() {
     //     'sk_test_51QiMYvGUPCXDYpQ6Yq9Z7scA5L027SwwLeEoDqGLACg9YP2Rxf2ZYg9pA8ZGLAEZBsvRcz20yNYRCSzH8Ftr7GWX009Zf7ZLMs';
     // const stripeClient = new Stripe(stripeApiKey);
     const service = new OrderService(dbConn, mapper);
+    const authClient = new ServerAuthClient({
+        publishableKey: 'pk_test_c3VwZXItc25pcGUtNzMuY2xlcmsuYWNjb3VudHMuZGV2JA',
+        secretKey: 'sk_test_jlDQXm7TW7PejKHhMONKcgnsHaoH5m56ltNVFzhNc6'
+    });
 
-    const routes: Route[] = [{ method: 'POST', path: '/checkout-session', handler: postCheckoutSessionHandler }];
+    const routes: Route[] = [
+        { method: 'POST', path: '/checkout-session/{id}/summary', handler: postCheckoutSessionHandler },
+        { method: 'POST', path: '/init-checkout-session', handler: postInitCheckoutSessionHandler }
+    ];
 
     return {
         service,
-        routes
+        routes,
+        authClient
     };
 }
 
 export const matchRoute = (routes: Route[], method: string, path: string) => {
-    console.log("path " + path)
+    console.log('path ' + path);
     const requestSegments = path.split('/').filter(Boolean);
 
     for (const route of routes) {

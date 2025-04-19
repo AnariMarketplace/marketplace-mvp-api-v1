@@ -7,6 +7,8 @@ import { createListingHandler } from './handlers/createListing.handler';
 import { getListingHandler } from './handlers/getListings.handler';
 import { getListingByIdHandler } from './handlers/getListingById.handler';
 import { SNSClient } from '@aws-sdk/client-sns';
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { getListingOrderContextByListingIdsHandler } from './handlers/getListingOrderContextByListingIds';
 
 // Setup server
 export function initServer() {
@@ -24,21 +26,28 @@ export function initServer() {
         }
     });
 
+    const authClient = new ServerAuthClient({
+        publishableKey: 'pk_test_c3VwZXItc25pcGUtNzMuY2xlcmsuYWNjb3VudHMuZGV2JA',
+        secretKey: 'sk_test_jlDQXm7TW7PejKHhMONKcgnsHaoH5m56ltNVFzhNc6'
+    });
+
     const routes: Route[] = [
         { method: 'POST', path: '/listings', handler: createListingHandler },
         { method: 'GET', path: '/listings', handler: getListingHandler },
+        { method: 'GET', path: '/listings/order-context', handler: getListingOrderContextByListingIdsHandler },
         { method: 'GET', path: '/listings/{id}', handler: getListingByIdHandler }
     ];
 
     return {
         service,
         routes,
-        snsClient
+        snsClient,
+        authClient
     };
 }
 
 export const matchRoute = (routes: Route[], method: string, path: string) => {
-    console.log("path " + path)
+    console.log('path ' + path);
     const requestSegments = path.split('/').filter(Boolean);
 
     for (const route of routes) {

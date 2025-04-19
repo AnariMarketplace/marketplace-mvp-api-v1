@@ -137,7 +137,7 @@ deploy-notification:
 	npx serverless deploy function -f notificationService --stage local --region us-west-2
 
 deploy-all:
-	npx serverless deploy --stage local --region us-west-2;
+	 serverless deploy --stage local --region us-west-2;
 
 
 update-db:

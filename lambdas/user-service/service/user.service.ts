@@ -1,7 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
-import { driverRealtimeMetadataTable, driversTable } from '../db/schema';
+import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db/schema';
 import { DriverRealtimeMetadata } from '../types/types';
 import { POJO } from '../types/constants';
 
@@ -30,5 +30,10 @@ export class UserService {
     async getDriverId(authId: string) {
         const driver = await this._dbClient.select().from(driversTable).where(eq(driversTable.authId, authId));
         return driver[0].id;
+    }
+
+    async getSellerInfo(id: string) {
+        const seller = await this._dbClient.select().from(sellersTable).where(eq(sellersTable.id, id));
+        return seller[0];
     }
 }

@@ -1,14 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { initServer, matchRoute } from './server';
 
-const { routes, service } = initServer();
+const { routes, service, authClient } = initServer();
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     // Log the incoming request method/path
     console.log('Incoming request:', event.httpMethod, event.path, event.pathParameters);
 
-    if(!event.httpMethod){
-        console.log('Got empty httpmethod request, likely from lamda initialization ')
+    if (!event.httpMethod) {
+        console.log('Got empty httpmethod request, likely from lamda initialization ');
         return {
             statusCode: 100,
             body: JSON.stringify({})
@@ -31,7 +31,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         event.pathParameters = matchedRoute.params;
         //@ts-ignore
 
-        return await matchedRoute.route.handler(event, service);
+        return await matchedRoute.route.handler(event, service, authClient);
         // return await route.handler(event, service);
     } catch (err: any) {
         // Log and return the error

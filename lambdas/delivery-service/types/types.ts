@@ -6,7 +6,15 @@ import { pricingRequestsTable } from '../db/schema';
 
 export const PricingRequestInputValidationSchema = z.object({
     deliveryAddress: z.string(),
-    pickupAddress: z.string()
+    pickupAddress: z.string(),
+    items: z.array(
+        z.object({
+            weight: z.number(),
+            height: z.number(),
+            width: z.number(),
+            length: z.number()
+        })
+    )
 });
 
 export type PricingRequestInputDto = z.infer<typeof PricingRequestInputValidationSchema>;
@@ -14,13 +22,11 @@ export type PricingRequest = typeof pricingRequestsTable.$inferInsert & {};
 
 export interface PricingRequestOutputDto extends PricingRequest {}
 
-
 export interface Route {
     method: 'POST' | 'GET' | 'PUT' | 'DELETE';
     path: string;
     handler: (event: APIGatewayProxyEvent, service: any) => Promise<APIGatewayProxyResult>;
 }
-
 
 // Delivery
 export interface Delivery {

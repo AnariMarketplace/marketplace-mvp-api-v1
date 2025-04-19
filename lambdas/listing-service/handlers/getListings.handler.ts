@@ -6,11 +6,12 @@ import { ListingService } from '../service/listing.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
 import { SNSClient } from '@aws-sdk/client-sns';
-
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 export const getListingHandler = async (
     event: APIGatewayProxyEvent,
     service: ListingService,
-    snsClient: SNSClient
+    snsClient: SNSClient,
+    authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = event.queryStringParameters ?? '{}';

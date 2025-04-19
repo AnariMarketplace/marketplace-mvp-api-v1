@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { listingsTable } from '../db/schema';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
 import { SNSClient } from '@aws-sdk/client-sns';
-
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
 export type ApiQueryInputDto = z.infer<typeof ApiQueryValidationSchema>;
 export type Listing = typeof listingsTable.$inferInsert & {};
@@ -27,7 +27,12 @@ export interface ListingOutputDto {
 export interface Route {
     method: 'POST' | 'GET' | 'PUT' | 'DELETE';
     path: string;
-    handler: (event: APIGatewayProxyEvent, service: any, snsClient: SNSClient) => Promise<APIGatewayProxyResult>;
+    handler: (
+        event: APIGatewayProxyEvent,
+        service: any,
+        snsClient: SNSClient,
+        authClient: ServerAuthClient
+    ) => Promise<APIGatewayProxyResult>;
 }
 
 export const ApiQueryValidationSchema = z.object({

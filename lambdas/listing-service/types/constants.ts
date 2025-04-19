@@ -7,7 +7,3 @@ export enum POJO {
     LISTING_API_QUERY = 'ListingApiQuery',
     LISTING_API_QUERY_UNSTRUCTURED = 'ListingApiQueryUnstructured'
 }
-
-// export enum DATABASE_TABLES {
-//     LISTINGS = 'Listings'
-// }
