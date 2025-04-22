@@ -11,3 +11,4 @@ events/
 supabase/
 drizzle-prod/
 drizzle.prod.config.ts
+drizzle-local-migrations
