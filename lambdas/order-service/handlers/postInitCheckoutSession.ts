@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { OrderService } from '../service/order.service';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { CheckoutSessionService } from '../service/checkoutSession.service';
+import { OrderService } from '../service/order.service';
 
 export const postInitCheckoutSessionHandler = async (
     event: APIGatewayProxyEvent,
@@ -17,12 +18,12 @@ export const postInitCheckoutSessionHandler = async (
         console.log('event headers', event.multiValueHeaders);
 
         const token = authClient.requireAuthToken(event.multiValueHeaders);
-        console.log('token', token);
-
         const user = await authClient.getUserFromToken(token);
+
         if (!user) {
             throw new BadRequestError('User not found');
         }
+
         console.log('user', user);
 
         //collect order context listing details

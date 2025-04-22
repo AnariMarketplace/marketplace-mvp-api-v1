@@ -1,23 +1,20 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { eq, inArray, like, sql } from 'drizzle-orm';
+import { eq, like } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
-import { listingsTable, ListingTableSelectSchema } from '../db/schema';
+import { listingsTable } from '../db/schema';
 import { ApiQueryInputDto, Listing } from '../types/types';
-import { POJO } from '../types/constants';
 
 export class ListingService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}
 
     async create(listing: Listing): Promise<Listing> {
         const [insertedRow] = await this._dbClient.insert(listingsTable).values(listing).returning();
-
-        return this._mapper.map(insertedRow, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING);
+        return insertedRow;
     }
 
     async getById(id: string): Promise<Listing> {
         const [listing] = await this._dbClient.select().from(listingsTable).where(eq(listingsTable.id, id));
-
-        return this._mapper.map(listing, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING);
+        return listing;
     }
 
     async getAllByQuery(query: ApiQueryInputDto): Promise<Listing[]> {
@@ -41,10 +38,11 @@ export class ListingService {
         }
 
         // Map each DB row to your Listing shape
-        return res.map((row) => this._mapper.map(row, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING));
+        // return res.map((row) => this._mapper.map(row, POJO.LISTING_TABLE_SCHEMA, POJO.LISTING));
+        return res;
     }
 
-    async getListingOrderContextByListingIds(listingIds: string) {
+    async getListingOrderContextByListingIds(listingIds: string): Promise<Partial<Listing>> {
         console.log('listingIds', listingIds);
         const res = await this._dbClient
             .select({
@@ -60,6 +58,6 @@ export class ListingService {
             .limit(1);
 
         console.log('res', res);
-        return res;
+        return res as unknown as Listing;
     }
 }

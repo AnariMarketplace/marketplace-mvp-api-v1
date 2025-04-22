@@ -1,8 +1,6 @@
-// import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { z } from 'zod';
-
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { pricingRequestsTable } from '../db/schema';
+import { deliveriesTable } from '../db/deliveryTable';
+import { pricingRequestsTable } from '../db/pricingRequestTable';
 
 export const PricingRequestInputValidationSchema = z.object({
     deliveryAddress: z.string(),
@@ -17,18 +15,6 @@ export const PricingRequestInputValidationSchema = z.object({
     )
 });
 
-export type PricingRequestInputDto = z.infer<typeof PricingRequestInputValidationSchema>;
-export type PricingRequest = typeof pricingRequestsTable.$inferInsert & {};
-
-export interface PricingRequestOutputDto extends PricingRequest {}
-
-export interface Route {
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE';
-    path: string;
-    handler: (event: APIGatewayProxyEvent, service: any) => Promise<APIGatewayProxyResult>;
-}
-
-// Delivery
 export interface Delivery {
     id: string;
     driverId?: string;
@@ -66,108 +52,17 @@ export interface DeliveryInput {
 
 export interface DeliveryOutputDto extends Delivery {}
 
-// Shared address type (used in input DTOs)
-// export interface Address {
-//     street: string;
-//     city: string;
-//     state: string;
-//     postalCode: string;
-//     country: string;
-// }
+export interface Address {
+    street: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
+}
 
-// Pricing Request
-// export interface PricingRequest {
-//     id: string;
-//     recommendedCategory: 'BASE' | 'XL';
-//     recommendedVehicleSizeCategory: 'SMALL' | 'MED' | 'LARGE';
-//     totalFee: number;
-//     surcharges?: { reason: string; fee: number }[];
-//     distanceCharge?: number;
-//     weightCharge?: number;
-//     travelDistance?: number;
-//     travelTime?: number;
-//     selectedPickupTime?: string;
-//     expiresAt?: string;
-//     createdAt: string;
-//     updatedAt: string;
-// }
+export type PricingRequestInputDto = z.infer<typeof PricingRequestInputValidationSchema>;
+export type PricingRequest = typeof pricingRequestsTable.$inferInsert & {};
+export interface PricingRequestOutputDto extends PricingRequest {}
 
-// // ---------------------
-// // Shared Schemas
-// // ---------------------
-
-// // Address used in PricingRequestInput
-// export const AddressSchema = z.object({
-//     street: z.string(),
-//     city: z.string(),
-//     state: z.string(),
-//     postalCode: z.string(),
-//     country: z.string()
-// });
-// export type Address = z.infer<typeof AddressSchema>;
-
-// // Item used in PricingRequestInput (for additional details)
-// export const PricingRequestItemSchema = z.object({
-//     title: z.string(),
-//     baseWeight: z.number().int(),
-//     height: z.number(),
-//     width: z.number(),
-//     length: z.number()
-// });
-// export type PricingRequestItem = z.infer<typeof PricingRequestItemSchema>;
-
-// // ---------------------
-// // Pricing Request Schemas
-// // ---------------------
-
-// export type PricingRequest = z.infer<typeof PricingRequestInputValidationSchema>;
-
-// export type PricingRequestInput = z.infer<typeof PricingRequestInputValidationSchema>;
-
-// // ---------------------
-// // Delivery Schemas
-// // ---------------------
-
-// export const DeliveryValidationSchema = z.object({
-//     id: z.string().uuid(),
-//     driverId: z.string().uuid().optional(),
-//     orderId: z.string().uuid().optional(),
-//     status: z.enum(['AWAITING_PICKUP', 'IN_TRANSIT', 'DELIVERED', 'ORDER_CANCELLED', 'DRIVER_CANCELLED']),
-//     cancellationReason: z.string().optional(),
-//     cancelledAt: z.string().datetime().optional(),
-//     category: z.enum(['BASE', 'XL']),
-//     deliveryNotes: z.string().optional(),
-//     pickupTime: z.string().optional(),
-//     travelDistance: z.number().int().optional(),
-//     travelTime: z.number().int().optional(),
-//     eta: z.number().int().optional(),
-//     pickupAddressFull: z.string().optional(),
-//     dropoffAddressFull: z.string().optional(),
-//     oversizedAssistanceRequired: z.boolean().optional(),
-//     totalFee: z.number().optional(),
-//     startedAt: z.string().datetime().optional(),
-//     closedAt: z.string().datetime().optional(),
-//     createdAt: z.string().datetime(),
-//     updatedAt: z.string().datetime()
-// });
-// export type Delivery = z.infer<typeof DeliveryValidationSchema>;
-
-// export const DeliveryInputValidationSchema = z.object({
-//     driverId: z.string().uuid(),
-//     orderId: z.string().uuid(),
-//     status: z.enum(['AWAITING_PICKUP', 'IN_TRANSIT', 'DELIVERED', 'ORDER_CANCELLED', 'DRIVER_CANCELLED']),
-//     cancellationReason: z.string().optional(),
-//     cancelledAt: z.string().datetime().optional(),
-//     deliveryNotes: z.string().optional(),
-//     oversizedAssistanceRequired: z.boolean().optional(),
-//     startedAt: z.string().datetime().optional(),
-//     closedAt: z.string().datetime().optional()
-// });
-// export type DeliveryInput = z.infer<typeof DeliveryInputValidationSchema>;
-
-// export interface PricingRequestInput {
-//     pickupAddressFull: Address;
-//     dropoffAddressFull: Address;
-//     items: { title: string; baseWeight: number; height: number; width: number; length: number }[];
-//     selectedPickupTime?: string;
-// }
+export type DeliveryTableSelectSchema = typeof deliveriesTable.$inferSelect;
+export type PricingRequestTableSelectSchema = typeof pricingRequestsTable.$inferSelect;
