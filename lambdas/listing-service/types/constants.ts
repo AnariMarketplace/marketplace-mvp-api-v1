@@ -7,3 +7,9 @@ export enum POJO {
     LISTING_API_QUERY = 'ListingApiQuery',
     LISTING_API_QUERY_UNSTRUCTURED = 'ListingApiQueryUnstructured'
 }
+
+export const SNS_TOPIC_ARN = 'arn:aws:sns:us-west-2:000000000000:FanoutTopic';
+
+export enum EVENTS {
+    LISTING_CREATED_EVENT = 'LISTING_SERVICE:LISTING:CREATED'
+}

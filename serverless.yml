@@ -32,7 +32,7 @@ custom:
   env:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
-      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/j1uzsmrogh/local
+      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/izow8ppjtu/local
 
     dev:
       DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co

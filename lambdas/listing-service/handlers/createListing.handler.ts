@@ -1,66 +1,55 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { mapper } from '../mappers/listings.mapper';
 import { Listing, ListingInputDto, ListingInputValidationSchema, ListingOutputDto } from '../types/types';
-import { POJO } from '../types/constants';
+import { EVENTS, POJO, SNS_TOPIC_ARN } from '../types/constants';
 import { ListingService } from '../service/listing.service';
-import { BadRequestError } from '@anarimarketplace/custom-errors';
-import { ZodError } from 'zod';
 import { PublishCommand, SNSClient } from '@aws-sdk/client-sns';
-import { verifyToken } from '@clerk/backend';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { BadRequestError } from '@anarimarketplace/custom-errors';
+import { parse } from '@anarimarketplace/utils';
+
 export const createListingHandler = async (
     event: APIGatewayProxyEvent,
     service: ListingService,
     snsClient: SNSClient,
     authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
-    try {
-        const token = authClient.requireAuthToken(event.multiValueHeaders);
-        const user = await authClient.getUserFromToken(token);
-        console.log(user);
+    const { multiValueHeaders, body: rawBody } = event;
 
-        const payload = JSON.parse(event.body ?? '{}');
-        console.log(payload);
+    // 1) Auth
+    const token = authClient.requireAuthToken(multiValueHeaders);
+    const user = await authClient.getUserFromToken(token);
 
-        payload.sellerId = user.privateMetadata.sellerId;
+    // 2) Parse + validate, injecting sellerId
+    const mergedRequest = {
+        ...JSON.parse(rawBody ?? '{}'),
+        sellerId: user.privateMetadata.sellerId
+    };
 
-        const validatedListing = ListingInputValidationSchema.parse(payload);
-        const listingEntity = mapper.map<ListingInputDto, Listing>(
-            validatedListing,
-            POJO.LISTING_INPUT_DTO,
-            POJO.LISTING
-        );
+    const input = parse<ListingInputDto>(
+        ListingInputValidationSchema,
+        mergedRequest,
+        (zErr) => new BadRequestError('Invalid listing input', { context: zErr.errors })
+    );
 
-        const createdListing = await service.create(listingEntity);
+    // 3) Map → persist → map
+    const entity = mapper.map<ListingInputDto, Listing>(input, POJO.LISTING_INPUT_DTO, POJO.LISTING);
+    const saved = await service.create(entity);
+    const output = mapper.map<Listing, ListingOutputDto>(saved, POJO.LISTING, POJO.LISTING_OUTPUT_DTO);
 
-        const responseDto = mapper.map<Listing, ListingOutputDto>(
-            createdListing,
-            POJO.LISTING,
-            POJO.LISTING_OUTPUT_DTO
-        );
-
-        await snsClient.send(
-            new PublishCommand({
-                Message: JSON.stringify({ ...responseDto, event: 'LISTING_SERVICE:LISTING:CREATED' }),
-                TopicArn: 'arn:aws:sns:us-west-2:000000000000:FanoutTopic'
+    // 4) Publish event
+    await snsClient.send(
+        new PublishCommand({
+            TopicArn: SNS_TOPIC_ARN,
+            Message: JSON.stringify({
+                ...output,
+                event: EVENTS.LISTING_CREATED_EVENT
             })
-        );
-        return {
-            statusCode: 201,
-            body: JSON.stringify(responseDto)
-        };
-    } catch (error) {
-        // -- Let your main Lambda handler do the final error-to-HTTP-response mapping
-        // -- by throwing a custom error with the correct statusCode.
+        })
+    );
 
-        // Convert validation errors into your custom BadRequestError
-        if (error instanceof ZodError) {
-            throw new BadRequestError(error.message, { context: error.errors });
-        }
-
-        // If it’s some other error you specifically want to treat as a "bad request,"
-        // you could also throw a BadRequestError here.
-        // Otherwise, re-throw so the main Lambda handler sees it and returns a 500.
-        throw error;
-    }
+    return {
+        statusCode: 201,
+        body: JSON.stringify(output)
+    };
 };

@@ -16,8 +16,12 @@
     "dependencies": {
         "@anarimarketplace/auth-lib": "^0.0.3",
         "@anarimarketplace/custom-errors": "^0.0.1",
+        "@anarimarketplace/match-route": "^0.0.1",
+        "@anarimarketplace/routing": "^0.0.1",
+        "@anarimarketplace/utils": "^0.0.1",
         "@automapper/core": "^8.8.1",
         "@automapper/pojos": "^8.8.1",
+        "@aws-sdk/client-sns": "^3.787.0",
         "drizzle-orm": "^0.40.0",
         "esbuild": "^0.14.14",
         "postgres": "^3.4.5",

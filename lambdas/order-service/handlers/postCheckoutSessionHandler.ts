@@ -3,7 +3,6 @@ import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
 import { OrderService } from '../service/order.service';
 import { CheckoutSession, CheckoutSessionInputDto, CheckoutInputValidationSchema } from '../types/types';
-import { mapper } from '../mappers/orders.mapper';
 import { POJO } from '../types/constants';
 
 export const postCheckoutSessionHandler = async (

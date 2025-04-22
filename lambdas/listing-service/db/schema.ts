@@ -1,4 +1,3 @@
-import { DATABASE_TABLES } from '@anarimarketplace/constants';
 import { decimal, pgSchema, pgTable as table, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const listingServiceSchema = pgSchema('listing_service');
@@ -15,5 +14,3 @@ export const listingsTable = listingServiceSchema.table('listings', {
     width: decimal(),
     length: decimal()
 });
-
-export type ListingTableSelectSchema = typeof listingsTable.$inferSelect;
