@@ -1,1 +1,0 @@
-ALTER TABLE "user_service"."drivers" RENAME COLUMN "user_id" TO "auth_id";

@@ -37,6 +37,9 @@ drizzle-generate:
 drizzle-migrate:
 	@echo "Running Drizzle migrations..."
 	npx drizzle-kit migrate --config=drizzle.local.config.ts
+drizzle-push:
+	@echo "Applying Database Changes...💾"
+	npx drizzle-kit push --config=drizzle.local.config.ts
 
 connect-stripe:
 	@echo "Connecting to Stripe with dev-cli access"

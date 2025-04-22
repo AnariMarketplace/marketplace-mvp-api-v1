@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
-import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db/schema';
+import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db';
 
 export interface DriverOutputDto extends Driver {}
 
@@ -30,3 +30,5 @@ export type VehicleInfo = {
 export type Driver = typeof driversTable.$inferSelect;
 export type DriverRealtimeMetadata = typeof driverRealtimeMetadataTable.$inferSelect;
 export type Seller = typeof sellersTable.$inferSelect;
+export type DriverTableSelectSchema = typeof driversTable.$inferSelect;
+export type DriverRealtimeMetadataTableSelectSchema = typeof driverRealtimeMetadataTable.$inferSelect;
