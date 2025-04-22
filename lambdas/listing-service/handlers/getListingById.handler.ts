@@ -13,18 +13,11 @@ export const getListingByIdHandler = async (
     snsClient: SNSClient,
     authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
-    try {
-        console.log('Get listing by id handler', event.pathParameters);
-        const foundListing = await service.getById(event.pathParameters?.id!);
-        const responseDto = mapper.map<Listing, ListingOutputDto>(foundListing, POJO.LISTING, POJO.LISTING_OUTPUT_DTO);
-        return {
-            statusCode: 200,
-            body: JSON.stringify(responseDto)
-        };
-    } catch (error) {
-        if (error instanceof ZodError) {
-            throw new BadRequestError(error.message, { context: error.errors });
-        }
-        throw error;
-    }
+    console.log('Get listing by id handler', event.pathParameters);
+    const foundListing = await service.getById(event.pathParameters?.id!);
+    const responseDto = mapper.map<Listing, ListingOutputDto>(foundListing, POJO.LISTING, POJO.LISTING_OUTPUT_DTO);
+    return {
+        statusCode: 200,
+        body: JSON.stringify(responseDto)
+    };
 };

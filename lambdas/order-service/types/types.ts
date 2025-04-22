@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda/trigger/api-gateway-proxy';
-import { checkoutSessionTable } from '../db/schema';
-import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { ordersTable } from '../db/orderTable';
+import { checkoutSessionTable } from '../db/checkoutSessionTable';
+
 export type CheckoutSessionInputDto = z.infer<typeof CheckoutInputValidationSchema>;
 export type CheckoutSession = typeof checkoutSessionTable.$inferInsert & {};
 
@@ -41,13 +41,5 @@ export interface DeliveryDetails {
 }
 
 // export type ListingMetadata = z.infer<typeof ListingMetadataInputValidationSchema>;
-
-export interface Route {
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE';
-    path: string;
-    handler: (
-        event: APIGatewayProxyEvent,
-        service: any,
-        authClient: ServerAuthClient
-    ) => Promise<APIGatewayProxyResult>;
-}
+export type CheckoutSessionTableSelectSchema = typeof checkoutSessionTable.$inferSelect;
+export type OrdersTableSelectSchema = typeof ordersTable.$inferSelect;

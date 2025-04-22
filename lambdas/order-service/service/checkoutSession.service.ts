@@ -5,10 +5,11 @@ import { Mapper } from '@automapper/core';
 import { POJO } from '../types/constants';
 import { CheckoutSession } from '../types/types';
 import { checkoutSessionTable } from '../db/checkoutSessionTable';
-export class OrderService {
+
+export class CheckoutSessionService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}
 
-    async createCheckoutSession(checkout: CheckoutSession): Promise<CheckoutSession> {
+    async createCheckoutSessions(checkout: CheckoutSession): Promise<CheckoutSession> {
         const [insertedRow] = await this._dbClient.insert(checkoutSessionTable).values(checkout).returning();
         return this._mapper.map(insertedRow, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);
     }
