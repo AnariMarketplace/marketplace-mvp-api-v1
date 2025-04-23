@@ -138,6 +138,9 @@ deploy-order:
 
 deploy-notification:
 	npx serverless deploy function -f notificationService --stage local --region us-west-2
+	
+deploy-user:
+	npx serverless deploy function -f userService --stage local --region us-west-2
 
 deploy-all:
 	 serverless deploy --stage local --region us-west-2;

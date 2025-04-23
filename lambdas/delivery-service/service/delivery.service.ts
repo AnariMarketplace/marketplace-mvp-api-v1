@@ -24,4 +24,27 @@ export class DeliveryService {
         const [insertedRow] = await this._dbClient.insert(pricingRequestsTable).values(pricingRequest).returning();
         return this._mapper.map(insertedRow, POJO.PRICING_REQUEST_TABLE_SCHEMA, POJO.PRICING_REQUEST);
     }
+
+    private async calculateDistanceAndDuration(pickupAddress: string, deliveryAddress: string) {
+        const res = await fetch(
+            `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${encodeURI(
+                deliveryAddress
+            )}&origins=${encodeURI(pickupAddress)}&units=imperial&key=${process.env.GOOGLE_API_KEY}`,
+            {
+                method: 'Get'
+            }
+        );
+
+        const data = await res.json();
+        return {
+            distance: {
+                raw: data.rows[0].elements[0].distance.value,
+                text: data.rows[0].elements[0].distance.text
+            },
+            duration: {
+                raw: data.rows[0].elements[0].duration.value,
+                text: data.rows[0].elements[0].duration.text
+            }
+        };
+    }
 }

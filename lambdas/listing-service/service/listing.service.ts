@@ -1,8 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq, like } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
-import { listingsTable } from '../db/schema';
 import { ApiQueryInputDto, Listing } from '../types/types';
+import { listingsTable } from '../db';
 
 export class ListingService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}

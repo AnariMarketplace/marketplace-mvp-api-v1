@@ -33,6 +33,7 @@ custom:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
       SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/izow8ppjtu/local
+      GOOGLE_API_KEY: AIzaSyBug47FB8Dp2QzEo_AodSy55l2VdjjG6-c
 
     dev:
       DATABASE_URL: https://etxyzjizvpnycobqjqgk.supabase.co
@@ -132,6 +133,10 @@ functions:
           private: false
       - http:
           path: sellers/{id}/info
+          method: get
+          private: false
+      - http:
+          path: auth/{id}/token
           method: get
           private: false
 resources:

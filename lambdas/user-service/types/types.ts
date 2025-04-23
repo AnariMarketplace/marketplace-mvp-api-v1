@@ -4,12 +4,6 @@ import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db';
 
 export interface DriverOutputDto extends Driver {}
 
-export interface Route {
-    method: 'POST' | 'GET' | 'PUT' | 'DELETE' | 'PATCH';
-    path: string;
-    handler: (event: APIGatewayProxyEvent, service: any, authClient?: any) => Promise<APIGatewayProxyResult>;
-}
-
 export const DriverRealtimeMetadataInputSchema = z.object({
     isOnShift: z.boolean().optional(),
     lastActiveAt: z.string().optional(),
