@@ -134,6 +134,10 @@ functions:
           path: sellers/{id}/info
           method: get
           private: false
+      - http:
+          path: auth/{id}/token
+          method: get
+          private: false
 resources:
   Resources:
     FanoutTopic:

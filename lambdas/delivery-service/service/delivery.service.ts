@@ -24,4 +24,8 @@ export class DeliveryService {
         const [insertedRow] = await this._dbClient.insert(pricingRequestsTable).values(pricingRequest).returning();
         return this._mapper.map(insertedRow, POJO.PRICING_REQUEST_TABLE_SCHEMA, POJO.PRICING_REQUEST);
     }
+
+    private async calculateDistance(pickupAddress: String, deliveryAddress: string) {
+        fetch;
+    }
 }

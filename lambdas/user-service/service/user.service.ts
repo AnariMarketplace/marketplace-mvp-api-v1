@@ -1,9 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
-import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db/schema';
 import { DriverRealtimeMetadata } from '../types/types';
-import { POJO } from '../types/constants';
+import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db';
 
 export class UserService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}
