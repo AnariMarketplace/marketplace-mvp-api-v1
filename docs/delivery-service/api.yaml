@@ -2,11 +2,13 @@ openapi: 3.0.3
 info:
   title: Delivery Service API
   version: "1.0.0"
-  description: A RESTful API for managing deliveries and pricing requests.
+  description: A RESTful API for managing pricing requests and deliveries.
 
 tags:
   - name: PricingRequests
+    description: Operations related to pricing requests
   - name: Deliveries
+    description: Retrieval and driver actions on deliveries
 
 paths:
   /deliveries/pricing-requests:
@@ -22,11 +24,11 @@ paths:
               $ref: "#/components/schemas/PricingRequestInput"
       responses:
         "201":
-          description: Pricing request created successfully.
+          description: Pricing request created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PricingRequest"
+                $ref: "#/components/schemas/PricingRequestOutput"
 
   /deliveries/pricing-requests/{pricingRequestId}:
     get:
@@ -34,8 +36,8 @@ paths:
         - PricingRequests
       summary: Retrieve a specific pricing request
       parameters:
-        - in: path
-          name: pricingRequestId
+        - name: pricingRequestId
+          in: path
           required: true
           schema:
             type: string
@@ -50,33 +52,14 @@ paths:
         "404":
           description: Pricing request not found
 
-  /deliveries:
-    post:
-      tags:
-        - Deliveries
-      summary: Create a new delivery
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/DeliveryInput"
-      responses:
-        "201":
-          description: Delivery created successfully.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Delivery"
-
   /deliveries/{deliveryId}:
     get:
       tags:
         - Deliveries
       summary: Retrieve a specific delivery
       parameters:
-        - in: path
-          name: deliveryId
+        - name: deliveryId
+          in: path
           required: true
           schema:
             type: string
@@ -87,206 +70,118 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Delivery"
+                $ref: "#/components/schemas/DeliveryOutput"
         "404":
           description: Delivery not found
-    # put:
-    #   tags:
-    #     - Deliveries
-    #   summary: Update a delivery
-    #   parameters:
-    #     - in: path
-    #       name: deliveryId
-    #       required: true
-    #       schema:
-    #         type: string
-    #         format: uuid
-    #   requestBody:
-    #     required: true
-    #     content:
-    #       application/json:
-    #         schema:
-    #           $ref: "#/components/schemas/DeliveryInput"
-    #   responses:
-    #     "200":
-    #       description: Delivery updated successfully
-    #       content:
-    #         application/json:
-    #           schema:
-    #             $ref: "#/components/schemas/Delivery"
-    #     "404":
-    #       description: Delivery not found
 
-    # delete:
-    #   tags:
-    #     - Deliveries
-    #   summary: Delete a delivery
-    #   parameters:
-    #     - in: path
-    #       name: deliveryId
-    #       required: true
-    #       schema:
-    #         type: string
-    #         format: uuid
-    #   responses:
-    #     "204":
-    #       description: Delivery deleted successfully
-    #     "404":
-    #       description: Delivery not found
-
-  /deliveries/{id}/driver-decision:
+  /deliveries/{deliveryId}/cancel:
     post:
       tags:
         - Deliveries
-      summary: Selected driver chooses to accept or reject a delivery
-      operationId: choiceDriver
-      description: allows the selected driver to accept or reject a delivery request
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                deliveryId:
-                  type: string
-                driverId:
-                  type: string
-                choice:
-                  type: string
-                  enum:
-                    - ACCEPTED
-                    - REJECTED
-            example:
-              deliveryId: "123"
-              driverId: "456"
-              choice: ACCEPTED
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  data:
-                    type: string
-              example:
-                status: success
-                data: ""
-
-  /deliveries/{id}/driver-cancel:
-    post:
-      tags:
-        - Deliveries
-      summary: Cancel a delivery
+      summary: Driver cancels a delivery
       operationId: cancelDelivery
-      description: allows the selected driver to cancel the delivery
+      parameters:
+        - name: deliveryId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                deliveryRequestId:
-                  type: string
-                driverId:
-                  type: string
-                reason:
-                  type: string
-                  enum:
-                    - VEHICLE_ISSUE
-                    -
-            example:
-              deliveryId: "123"
-              driverId: "456"
-              reason: VEHICLE_ISSUE
+              $ref: "#/components/schemas/CancelInput"
       responses:
         "200":
-          description: OK
+          description: Cancellation recorded
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                  data:
-                    type: string
-              example:
-                status: success
-                data: ""
+                $ref: "#/components/schemas/ApiResponseOutput"
+
+  /delivery-requests/{id}/decision:
+    post:
+      tags:
+        - Deliveries
+      summary: Driver accepts or rejects a delivery request
+      operationId: deliveryRequestDecision
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecisionInput"
+      responses:
+        "200":
+          description: Decision recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiResponseOutput"
 
 components:
   schemas:
-    PricingRequest:
+    # Pricing Requests
+    PricingRequestInput:
       type: object
+      required:
+        - pickupAddress
+        - deliveryAddress
+        - items
+      properties:
+        pickupAddress:
+          type: string
+        deliveryAddress:
+          type: string
+        selectedPickupTime:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - title
+              - baseWeight
+            properties:
+              title:
+                type: string
+              baseWeight:
+                type: integer
+              height:
+                type: number
+                format: float
+              width:
+                type: number
+                format: float
+              length:
+                type: number
+                format: float
+
+    PricingRequestOutput:
+      type: object
+      required:
+        - id
+        - recommendedCategory
+        - totalFee
       properties:
         id:
           type: string
           format: uuid
         recommendedCategory:
           type: string
-          enum: [BASE, XL]
-
-        # pickupAddress:
-        #   type: object
-        #   properties:
-        #     lat:
-        #       type: number
-        #       format: float
-        #     lng:
-        #       type: number
-        #       format: float
-        #     street:
-        #       type: string
-        #     city:
-        #       type: string
-        #     state:
-        #       type: string
-        #     postalCode:
-        #       type: string
-        #     country:
-        #       type: string
-        #   required:
-        #     - lat
-        #     - lng
-        #     - street
-        #     - city
-        #     - state
-        #     - postalCode
-        #     - country
-        # dropoffAddress:
-        #   type: object
-        #   properties:
-        #     lat:
-        #       type: number
-        #       format: float
-        #     lng:
-        #       type: number
-        #       format: float
-        #     street:
-        #       type: string
-        #     city:
-        #       type: string
-        #     state:
-        #       type: string
-        #     postalCode:
-        #       type: string
-        #     country:
-        #       type: string
-        #   required:
-        #     - lat
-        #     - lng
-        #     - street
-        #     - city
-        #     - state
-        #     - postalCode
-        #     - country
-
+          enum:
+            - BASE
+            - XL
         totalFee:
           type: number
           format: float
@@ -308,10 +203,15 @@ components:
           format: float
         travelDistance:
           type: integer
+        travelDistanceText:
+          type: string
         travelTime:
           type: integer
+        travelTimeText:
+          type: string
         selectedPickupTime:
           type: string
+          format: date-time
         expiresAt:
           type: string
           format: date-time
@@ -321,109 +221,15 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+    # Delivery Retrieval
+    DeliveryOutput:
+      type: object
       required:
         - id
-        - recommendedCategory
-        - totalFee
-
-    PricingRequestOutput:
-      type: object
-      properties:
-        category:
-          type: string
-          enum: [BASE, XL]
-        weightCharges:
-          type: number
-          format: float
-        distanceCharges:
-          type: number
-          format: float
-        pickupTime:
-          type: string
-          format: date-time
-        surcharges:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-              amount:
-                type: number
-                format: float
-        estimatedTravelTime:
-          type: string
-          format: date-time
-        total:
-          type: number
-          format: float
-    PricingRequestInput:
-      type: object
-      properties:
-        pickupAddress:
-          type: object
-          properties:
-            street:
-              type: string
-            city:
-              type: string
-            state:
-              type: string
-            postalCode:
-              type: string
-            country:
-              type: string
-          required:
-            - street
-            - city
-            - state
-            - postalCode
-            - country
-        dropoffAddress:
-          type: object
-          properties:
-            street:
-              type: string
-            city:
-              type: string
-            state:
-              type: string
-            postalCode:
-              type: string
-            country:
-              type: string
-          required:
-            - street
-            - city
-            - state
-            - postalCode
-            - country
-        items:
-          type: array
-          items:
-            type: object
-            properties:
-              title:
-                type: string
-              baseWeight:
-                type: integer
-              height:
-                type: number
-                format: float
-              width:
-                type: number
-                format: float
-              length:
-                type: number
-                format: float
-            required:
-              - title
-              - baseWeight
-        selectedPickupTime:
-          type: string
-
-    Delivery:
-      type: object
+        - status
+        - createdAt
+        - updatedAt
       properties:
         id:
           type: string
@@ -449,36 +255,34 @@ components:
           format: date-time
         category:
           type: string
-          enum: [BASE, XL]
+          enum:
+            - BASE
+            - XL
         deliveryNotes:
           type: string
         pickupTime:
           type: string
+          format: date-time
         travelDistance:
           type: integer
         travelTime:
           type: integer
         eta:
           type: integer
-        # pickupAddressFull:
-        #   type: string
-        dropoffAddressFull:
+        deliveryAddressFull:
           type: string
         oversizedAssistanceRequired:
           type: boolean
         pickupLat:
           type: number
           format: float
-          description: only shown to driver requests
         pickupLng:
           type: number
           format: float
-          description: only shown to driver requests
-
-        dropoffLat:
+        deliveryLat:
           type: number
           format: float
-        dropoffLng:
+        deliveryLng:
           type: number
           format: float
         fee:
@@ -496,71 +300,48 @@ components:
         updatedAt:
           type: string
           format: date-time
-      required:
-        - id
-        - status
-        - createdAt
-        - updatedAt
 
-    DeliveryInput:
+    # Driver Actions
+    DecisionInput:
       type: object
+      required:
+        - driverId
+        - choice
       properties:
+        deliveryId:
+          type: string
+          format: uuid
         driverId:
           type: string
           format: uuid
-        orderId:
-          type: string
-          format: uuid
-        status:
+        choice:
           type: string
           enum:
-            - AWAITING_PICKUP
-            - IN_TRANSIT
-            - DELIVERED
-            - ORDER_CANCELLED
-            - DRIVER_CANCELLED
-        cancellationReason:
+            - ACCEPTED
+            - REJECTED
+
+    CancelInput:
+      type: object
+      required:
+        - driverId
+        - reason
+      properties:
+        deliveryId:
           type: string
-        cancelledAt:
+          format: uuid
+        driverId:
           type: string
-          format: date-time
-        category:
+          format: uuid
+        reason:
           type: string
-          enum: [BASE, XL]
-        deliveryNotes:
+          enum:
+            - VEHICLE_ISSUE
+            - OTHER
+
+    ApiResponseOutput:
+      type: object
+      properties:
+        status:
           type: string
-        pickupTime:
+        data:
           type: string
-        travelDistance:
-          type: integer
-        travelTime:
-          type: integer
-        eta:
-          type: integer
-        pickupAddressFull:
-          type: string
-        dropoffAddressFull:
-          type: string
-        oversizedAssistanceRequired:
-          type: boolean
-        pickupLat:
-          type: number
-          format: float
-        pickupLng:
-          type: number
-          format: float
-        dropoffLat:
-          type: number
-          format: float
-        dropoffLng:
-          type: number
-          format: float
-        fee:
-          type: number
-          format: float
-        startedAt:
-          type: string
-          format: date-time
-        closedAt:
-          type: string
-          format: date-time
