@@ -15,8 +15,55 @@ paths:
     get:
       tags:
         - Listings
-      summary: Retrieve all listings
-      description: Retrieve a list of all available product listings.
+      summary: Retrieve listings near buyer coordinates
+      description: |
+        Returns a list of available product listings near the specified buyer coordinates.
+        Proximity-based filtering (default radius) is always applied; buyerCoords is required.
+      parameters:
+        - name: buyerCoords
+          in: query
+          description: Latitude and longitude of the buyer, comma-separated (e.g., "40.7128,-74.0060").
+          required: true
+          schema:
+            type: string
+            pattern: '^[-+]?\d+(\.\d+)?,\s*[-+]?\d+(\.\d+)?$'
+        - name: searchTitle
+          in: query
+          description: Text to search for in listing titles.
+          required: false
+          schema:
+            type: string
+        - name: searchMatchMode
+          in: query
+          description: Text match mode for title search.
+          required: false
+          schema:
+            type: string
+            enum:
+              - FUZZY
+              - STRICT
+            default: STRICT
+        - name: condition
+          in: query
+          description: Filter listings by condition.
+          required: false
+          schema:
+            type: string
+            enum:
+              - NEW
+              - GREAT
+              - FAIR
+              - POOR
+        - name: proximityMiles
+          in: query
+          description: Override default proximity radius in miles.
+          required: false
+          schema:
+            type: string
+            enum:
+              - lt_25
+              - mt_25
+            default: lt_25
       responses:
         "200":
           description: A JSON array of product listing objects.
@@ -25,15 +72,15 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Listing"
+                  $ref: "#/components/schemas/ListingOutput"
               example:
                 - id: "123e4567-e89b-12d3-a456-426614174010"
                   title: "Wireless Bluetooth Headphones"
                   type: "SALE"
-                  sellerId: "seller_4d4063f5-b78c-4501-a325-1179b44d826f"
+                  sellerId: "4d4063f5-b78c-4501-a325-1179b44d826f"
                   price: 199.99
                   description: "High quality wireless Bluetooth headphones with noise cancellation."
-                  photo_urls:
+                  photoUrls:
                     - "https://example.com/photos/headphones1.jpg"
                   condition: "NEW"
                   specs:
@@ -47,6 +94,7 @@ paths:
                   isFragile: false
         "500":
           description: Server error.
+
     post:
       tags:
         - Listings
@@ -82,7 +130,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Listing"
+                $ref: "#/components/schemas/ListingOutput"
               example:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones"
@@ -125,7 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Listing"
+                $ref: "#/components/schemas/ListingOutput"
               example:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones"
@@ -182,7 +230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Listing"
+                $ref: "#/components/schemas/ListingOutput"
               example:
                 id: "123e4567-e89b-12d3-a456-426614174010"
                 title: "Wireless Bluetooth Headphones - Discounted"
@@ -219,7 +267,7 @@ paths:
 
 components:
   schemas:
-    Listing:
+    ListingOutput:
       type: object
       properties:
         id:
@@ -382,7 +430,7 @@ components:
         isFragile:
           type: boolean
           description: Indicates whether the product is fragile.
-          default: 
+          default:
         brand:
           type: string
           description: Indicates which brand the item belongs to.
