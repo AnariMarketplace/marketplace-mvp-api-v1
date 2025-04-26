@@ -11,13 +11,17 @@ export class DeliveryService {
         const deliveryAddress = pricingRequest.pickupAddress;
         const pickupAddress = pricingRequest.pickupAddress;
 
+        console.log({ deliveryAddress, pickupAddress });
+
         if (!deliveryAddress || !pickupAddress) {
             throw new Error('Missing pickup or delivery address');
         }
 
         const distanceAndDuration = await this.calculateDistanceAndDuration(pickupAddress, deliveryAddress);
-        pricingRequest.totalFee = await this.calculateFee(distanceAndDuration.distance.raw, distanceAndDuration.duration.raw);
-
+        pricingRequest.totalFee = await this.calculateFee(
+            distanceAndDuration.distance.raw,
+            distanceAndDuration.duration.raw
+        );
 
         const [insertedRow] = await this._dbClient.insert(pricingRequestsTable).values(pricingRequest).returning();
         return this._mapper.map(insertedRow, POJO.PRICING_REQUEST_TABLE_SCHEMA, POJO.PRICING_REQUEST);
@@ -29,21 +33,21 @@ export class DeliveryService {
         const perMinuteRate = 0.5;
         const miles = distanceMeters / 1609.34;
         const minutes = durationSeconds / 60;
-        return baseFee + (perMileRate * miles) + (perMinuteRate * minutes);
+        return baseFee + perMileRate * miles + perMinuteRate * minutes;
     }
 
     private async calculateDistanceAndDuration(pickupAddress: string, deliveryAddress: string) {
         const res = await fetch(
             `https://maps.googleapis.com/maps/api/distancematrix/json?destinations=${encodeURI(
                 deliveryAddress
-            )}&origins=${encodeURI(pickupAddress)}&units=imperial&key=${process.env.GOOGLE_API_KEY}`,
+            )}&origins=${encodeURI(pickupAddress)}&units=imperial&key=AIzaSyBMnbwGi_srnVcJt5RPdoEcoec0-LRBsWc`,
             {
                 method: 'Get'
             }
         );
 
         const data = await res.json();
-        console.log(data)
+        console.log(data);
         return {
             distance: {
                 raw: data.rows[0].elements[0].distance.value,

@@ -2,14 +2,13 @@ import { z } from 'zod';
 import { ordersTable } from '../db/orderTable';
 import { checkoutSessionTable } from '../db/checkoutSessionTable';
 
-export type CheckoutSessionInputDto = z.infer<typeof CheckoutInputValidationSchema>;
+export type CheckoutSessionInputDto = z.infer<typeof CheckoutSessionSummaryInputValidationSchema>;
 export type CheckoutSession = typeof checkoutSessionTable.$inferInsert & {};
 
 // export type Listing = typeof listingsTable.$inferInsert & {};
-export const CheckoutInputValidationSchema = z.object({
+export const CheckoutSessionSummaryInputValidationSchema = z.object({
+    id: z.string().uuid(),
     deliveryAddress: z.string(),
-    listingIds: z.array(z.string()),
-    customerId: z.string(),
     orderNotes: z.string(),
     pickupTime: z.string()
 });
