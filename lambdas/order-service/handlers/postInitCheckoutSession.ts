@@ -1,7 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
-import { CheckoutSessionService } from '../service/checkoutSession.service';
 import { OrderService } from '../service/order.service';
 
 export const postInitCheckoutSessionHandler = async (

@@ -2,39 +2,52 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BadRequestError } from '@anarimarketplace/custom-errors';
 import { ZodError } from 'zod';
 import { OrderService } from '../service/order.service';
-import { CheckoutSession, CheckoutSessionInputDto, CheckoutInputValidationSchema } from '../types/types';
+import { CheckoutSession, CheckoutSessionInputDto, CheckoutSessionSummaryInputValidationSchema } from '../types/types';
 import { POJO } from '../types/constants';
+import { mapper } from '../mappers';
+import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 
-export const postCheckoutSessionHandler = async (
+export const postCheckoutSessionSummaryHandler = async (
     event: APIGatewayProxyEvent,
-    service: OrderService
+    service: OrderService,
+    authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
     try {
-        const { pickupTime, deliveryAddress } = JSON.parse(event.body ?? '{}');
-        console.log(pickupTime, deliveryAddress);
+        const payload = JSON.parse(event.body ?? '{}');
         const checkoutSessionId = event.pathParameters?.id;
         console.log(checkoutSessionId);
-        // const validatedCheckoutSessionInput = CheckoutInputValidationSchema.parse(payload);
+        const validatedCheckoutSessionInput = CheckoutSessionSummaryInputValidationSchema.parse({
+            ...payload,
+            id: checkoutSessionId
+        });
         // console.log(payload);
-        // const checkoutSessionEntity = mapper.map<CheckoutSessionInputDto, CheckoutSession>(
-        //     validatedCheckoutSessionInput,
-        //     POJO.CHECKOUT_INPUT_DTO,
-        //     POJO.CHECKOUT
-        // );
-        // await service.updateCheckoutSession({
-        //     id: checkoutSessionId!,
-        //     pickupTime,
-        //     deliveryAddress
-        // });
-        const customerId = '4639dcd4-7615-432f-b3c4-20091fe9e759';
+        const checkoutSessionInput = mapper.map<CheckoutSessionInputDto, CheckoutSession>(
+            validatedCheckoutSessionInput,
+            POJO.CHECKOUT_INPUT_DTO,
+            POJO.CHECKOUT
+        );
+
+        const token = authClient.requireAuthToken(event.multiValueHeaders);
+        const user = await authClient.getUserFromToken(token);
+
+        if (!user) {
+            throw new BadRequestError('User not found');
+        }
+
+        await service.updateCheckoutSession({
+            id: checkoutSessionInput.id,
+            orderNotes: checkoutSessionInput.orderNotes,
+            deliveryAddress: checkoutSessionInput.deliveryAddress,
+            customerId: user.privateMetadata.id as string
+        });
 
         const checkoutSession = await service.getCheckoutSessionById(checkoutSessionId!);
 
-        console.log(checkoutSession);
+        // console.log(checkoutSession);
 
-        if (checkoutSession.customerId !== customerId) {
-            throw new Error('Unauthorized');
-        }
+        // if (checkoutSession.customerId !== customerId) {
+        //     throw new Error('Unauthorized');
+        // }
 
         const deliveryPricingRequest = await fetch(`${process.env.SERVICES_URL}/pricing-requests`, {
             method: 'POST',
@@ -42,7 +55,7 @@ export const postCheckoutSessionHandler = async (
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                deliveryAddress,
+                deliveryAddress: checkoutSession.deliveryAddress,
                 pickupAddress: checkoutSession.pickupAddress,
                 items: [
                     {

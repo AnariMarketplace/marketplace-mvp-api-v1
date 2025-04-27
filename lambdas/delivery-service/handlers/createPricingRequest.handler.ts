@@ -24,6 +24,8 @@ export const createPricingRequestHandler = async (
         (zErr) => new BadRequestError('Invalid pricing request input', { context: zErr.errors })
     );
 
+    console.log(validatedRequest);
+
     const pricingRequest = mapper.map<PricingRequestInputDto, PricingRequest>(
         validatedRequest,
         POJO.PRICING_REQUEST_INPUT_DTO,

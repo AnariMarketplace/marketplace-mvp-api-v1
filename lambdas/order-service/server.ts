@@ -5,12 +5,12 @@ import postgres from 'postgres';
 // import { createPaymentIntentHandler } from './handlers/getCheckout.handler';
 import { OrderService } from './service/order.service';
 import Stripe from 'stripe';
-import { postCheckoutSessionHandler as postCheckoutSessionHandler } from './handlers/postCheckoutSessionHandler';
 import { postInitCheckoutSessionHandler } from './handlers/postInitCheckoutSession';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 import { mapper } from './mappers';
 import { Route } from '@anarimarketplace/routing';
 import { SNSClient } from '@aws-sdk/client-sns';
+import { postCheckoutSessionSummaryHandler } from './handlers/postCheckoutSessionSummary.handler';
 //Setup server
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
@@ -33,7 +33,7 @@ export function initServer() {
     });
 
     const routes: Route[] = [
-        { method: 'POST', path: '/checkout-session/{id}/summary', handler: postCheckoutSessionHandler },
+        { method: 'POST', path: '/checkout-session/{id}/summary', handler: postCheckoutSessionSummaryHandler },
         { method: 'POST', path: '/init-checkout-session', handler: postInitCheckoutSessionHandler }
     ];
 
