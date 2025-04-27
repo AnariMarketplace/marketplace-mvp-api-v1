@@ -1,10 +1,10 @@
 import { sql } from 'drizzle-orm';
-import { jsonb, numeric, pgTable as table, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { json, jsonb, numeric, pgTable as table, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { orderSchema } from './schema';
 
 export const checkoutSessionTable = orderSchema.table('checkout_session', {
     id: uuid('id').defaultRandom().primaryKey(),
-    listingIds: jsonb('listing_ids'),
+    listings: json('listings').array(),
     customerId: uuid('customer_id'),
     deliveryPricingRequestId: uuid('delivery_pricing_request_id'),
     subtotal: numeric('subtotal', { precision: 10, scale: 2 }),

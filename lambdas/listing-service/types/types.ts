@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { listingsTable } from '../db/schema';
+import { listingsTable } from '../db';
 
 export type ListingInputDto = z.infer<typeof ListingInputValidationSchema>;
 export type ApiQueryInputDto = z.infer<typeof ApiQueryValidationSchema>;

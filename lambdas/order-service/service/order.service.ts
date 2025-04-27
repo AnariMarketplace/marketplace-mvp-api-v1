@@ -25,7 +25,7 @@ export class OrderService {
     //     const [checkout] = await this._dbClient.select().from(checkoutSessionTable).where(and(eq(checkoutSessionTable.customerId, customerId), eq(checkoutSessionTable.status, 'pending'))).limit(1);
     //     return this._mapper.map(checkout, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);
     // }
-    async updateCheckoutSession(checkout: CheckoutSession): Promise<CheckoutSession> {
+    async updateCheckoutSession(checkout: Partial<CheckoutSession>): Promise<CheckoutSession> {
         const [updatedRow] = await this._dbClient
             .update(checkoutSessionTable)
             .set(checkout)
@@ -33,4 +33,6 @@ export class OrderService {
             .returning();
         return this._mapper.map(updatedRow, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);
     }
+
+    async calculateCheckoutSessionSummaryTotals() {}
 }
