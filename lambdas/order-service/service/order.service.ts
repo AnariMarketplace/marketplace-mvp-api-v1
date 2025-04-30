@@ -15,18 +15,13 @@ export class OrderService {
 
     async getCheckoutSessionById(id: string): Promise<CheckoutSession> {
         const [checkout] = await this._dbClient
-            .select({
-                id: checkoutSessionTable.id,
-                listings: checkoutSessionTable.listings,
-                deliveryAddress: checkoutSessionTable.deliveryAddress,
-                pickupAddress: checkoutSessionTable.pickupAddress
-            })
+            .select()
             .from(checkoutSessionTable)
             .where(eq(checkoutSessionTable.id, id))
             .limit(1);
         console.log('checkout queried:', checkout);
-        // return this._mapper.map(checkout, POJO.CHECKOUT_TABLE_SCHEMA, POJO.CHECKOUT);
         return checkout;
+        // return checkout;
     }
     // async getCheckoutSessionByCustomerId(customerId: string): Promise<CheckoutSession> {
     //     const [checkout] = await this._dbClient.select().from(checkoutSessionTable).where(and(eq(checkoutSessionTable.customerId, customerId), eq(checkoutSessionTable.status, 'pending'))).limit(1);

@@ -10,6 +10,7 @@ import { Route } from '@anarimarketplace/routing';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { postCheckoutSessionSummaryHandler } from './handlers/postCheckoutSessionSummary.handler';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { getCheckoutSessionSummaryHandler } from './handlers/getCheckoutSessionSummary.handler';
 //Setup server
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
@@ -34,6 +35,7 @@ export function initServer() {
 
     const routes: Route[] = [
         { method: 'POST', path: '/checkout-session/{id}/summary', handler: postCheckoutSessionSummaryHandler },
+        { method: 'GET', path: '/checkout-session/{id}/summary', handler: getCheckoutSessionSummaryHandler },
         { method: 'POST', path: '/init-checkout-session', handler: postInitCheckoutSessionHandler }
     ];
 
