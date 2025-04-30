@@ -107,6 +107,10 @@ functions:
           method: post
           private: false
       - http:
+          path: checkout-session/{id}/summary
+          method: get
+          private: false
+      - http:
           path: init-checkout-session
           method: post
           private: false

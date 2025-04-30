@@ -3,7 +3,9 @@ import { ordersTable } from '../db/orderTable';
 import { checkoutSessionTable } from '../db/checkoutSessionTable';
 
 export type CheckoutSessionInputDto = z.infer<typeof CheckoutSessionSummaryInputValidationSchema>;
-export type CheckoutSession = typeof checkoutSessionTable.$inferInsert & {};
+export type CheckoutSession = typeof checkoutSessionTable.$inferInsert & {
+    deliveryDetails?: DeliveryDetails;
+};
 
 // export type Listing = typeof listingsTable.$inferInsert & {};
 export const CheckoutSessionSummaryInputValidationSchema = z.object({
@@ -17,24 +19,25 @@ export interface CheckoutOutputDto {
     id: string;
     deliveryDetails: DeliveryDetails;
     subtotal: number;
+    listings: any[];
 }
 
 export interface DeliveryDetails {
     recommendedCategory: string;
-    recommendedVehicleSizeCategory: string;
+    recommendedVehicleSizeCategory?: string;
 }
 
 export interface DeliveryDetails {
     recommendedCategory: string;
-    recommendedVehicleSizeCategory: string;
+    recommendedVehicleSizeCategory?: string;
     totalFee: number;
     surcharges: any[];
     distanceCharged: number;
     weightCharge: number;
-    travelDistance: number;
+    travelDistance?: number;
     travelTime: number;
     selectedPickupTime: string;
-    expiresAt: string;
+    expiresAt?: string;
     createdAt: string;
     updatedAt: string;
 }

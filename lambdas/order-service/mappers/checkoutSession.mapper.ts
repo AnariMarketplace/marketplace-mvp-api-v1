@@ -15,13 +15,15 @@ export function loadCheckoutSessionMappings() {
         subtotal: Number,
         deliveryAddress: String,
         pickupAddress: String,
-        customerId: String
+        customerId: String,
+        deliveryDetails: POJO.DELIVERY_DETAILS
         // metadata: POJO.MESSAGE_METADATA,
     });
     PojosMetadataMap.create<CheckoutOutputDto>(POJO.CHECKOUT_OUTPUT_DTO, {
         id: String,
         deliveryDetails: POJO.DELIVERY_DETAILS,
-        subtotal: Number
+        subtotal: Number,
+        listings: Array
 
         // metadata: POJO.MESSAGE_METADATA
     });
