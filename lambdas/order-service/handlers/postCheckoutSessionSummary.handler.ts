@@ -6,27 +6,29 @@ import { CheckoutSession, CheckoutSessionInputDto, CheckoutSessionSummaryInputVa
 import { POJO } from '../types/constants';
 import { mapper } from '../mappers';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
+import { SNSClient } from '@aws-sdk/client-sns';
 
 export const postCheckoutSessionSummaryHandler = async (
     event: APIGatewayProxyEvent,
     service: OrderService,
+    snsClient: SNSClient,
     authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
     try {
         const payload = JSON.parse(event.body ?? '{}');
         const checkoutSessionId = event.pathParameters?.id;
-        console.log(checkoutSessionId);
+        console.log('checkout session id', checkoutSessionId);
         const validatedCheckoutSessionInput = CheckoutSessionSummaryInputValidationSchema.parse({
             ...payload,
             id: checkoutSessionId
         });
-        // console.log(payload);
+        console.log(validatedCheckoutSessionInput);
         const checkoutSessionInput = mapper.map<CheckoutSessionInputDto, CheckoutSession>(
             validatedCheckoutSessionInput,
             POJO.CHECKOUT_INPUT_DTO,
             POJO.CHECKOUT
         );
-
+        console.log(checkoutSessionInput);
         const token = authClient.requireAuthToken(event.multiValueHeaders);
         const user = await authClient.getUserFromToken(token);
 
@@ -35,15 +37,15 @@ export const postCheckoutSessionSummaryHandler = async (
         }
 
         await service.updateCheckoutSession({
-            id: checkoutSessionInput.id,
-            orderNotes: checkoutSessionInput.orderNotes,
-            deliveryAddress: checkoutSessionInput.deliveryAddress,
+            id: validatedCheckoutSessionInput.id,
+            orderNotes: validatedCheckoutSessionInput.orderNotes,
+            deliveryAddress: validatedCheckoutSessionInput.deliveryAddress,
             customerId: user.privateMetadata.id as string
         });
 
         const checkoutSession = await service.getCheckoutSessionById(checkoutSessionId!);
 
-        // console.log(checkoutSession);
+        console.log('checkout session', checkoutSession);
 
         // if (checkoutSession.customerId !== customerId) {
         //     throw new Error('Unauthorized');
@@ -57,15 +59,7 @@ export const postCheckoutSessionSummaryHandler = async (
             body: JSON.stringify({
                 deliveryAddress: checkoutSession.deliveryAddress,
                 pickupAddress: checkoutSession.pickupAddress,
-                items: [
-                    {
-                        id: 'fake listing id',
-                        weight: 100,
-                        height: 100,
-                        width: 100,
-                        length: 100
-                    }
-                ]
+                items: checkoutSession.listings
             })
         });
 

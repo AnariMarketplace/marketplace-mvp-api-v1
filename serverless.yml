@@ -32,7 +32,7 @@ custom:
   env:
     local:
       DATABASE_URL: postgresql://postgres:postgres@host.docker.internal:54322/postgres
-      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/izow8ppjtu/local
+      SERVICES_URL: http://host.docker.internal:4566/_aws/execute-api/a2vaorycin/local
       GOOGLE_API_KEY: AIzaSyBug47FB8Dp2QzEo_AodSy55l2VdjjG6-c
 
     dev:
@@ -62,7 +62,7 @@ functions:
       - http:
           path: listings/order-context
           method: get
-          private: true
+          private: false
       - sqs:
           arn:
             Fn::GetAtt:

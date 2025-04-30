@@ -14,7 +14,7 @@
         "test": "npm run compile && npm run unit"
     },
     "dependencies": {
-        "@anarimarketplace/auth-lib": "^0.0.3",
+        "@anarimarketplace/auth-lib": "^0.0.4",
         "@anarimarketplace/custom-errors": "^0.0.1",
         "@anarimarketplace/match-route": "^0.0.1",
         "@anarimarketplace/routing": "^0.0.1",
