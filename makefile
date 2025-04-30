@@ -115,7 +115,7 @@ init-locals:
 	npx supabase start;
 	@echo "$(GREEN)Database locally running...$(RESET)"
 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"
-	# npx drizzle-kit generate --config=drizzle.local.config.ts
+	npx drizzle-kit generate --config=drizzle.local.config.ts
 	npx drizzle-kit migrate --config=drizzle.local.config.ts
 	@echo "$(GREEN)Migration complete...$(RESET)"
 # 	@echo "$(MAGENTA)Migrating local database schema...$(RESET)"

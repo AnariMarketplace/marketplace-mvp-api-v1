@@ -7,8 +7,8 @@ import { getListingHandler } from './handlers/getListings.handler';
 import { getListingByIdHandler } from './handlers/getListingById.handler';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { ServerAuthClient } from '@anarimarketplace/auth-lib';
-import { Route } from '@anarimarketplace/match-route';
 import { getListingOrderContextByListingIdsHandler } from './handlers/getListingOrderContextByListingId';
+import { Route } from '@anarimarketplace/routing';
 
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
