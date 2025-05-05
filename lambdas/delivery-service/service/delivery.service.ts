@@ -7,33 +7,41 @@ import { pricingRequestsTable } from '../db/pricingRequestTable';
 export class DeliveryService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}
 
-    async createPricingRequest(pricingRequest: PricingRequest): Promise<PricingRequest> {
-        const deliveryAddress = pricingRequest.pickupAddress;
-        const pickupAddress = pricingRequest.pickupAddress;
+    async createPricingRequest(pricingRequest: PricingRequest, items: { length: number; weight: number; height: number; width: number; }[]): Promise<PricingRequest> {
+    
+        const distanceAndDuration = await this.calculateDistanceAndDuration(pricingRequest.pickupAddress!, pricingRequest.deliveryAddress!);
+        
+        let totalWeight = 0;
+        items.forEach((item) => {
+            totalWeight = totalWeight + item.weight!
+        });
 
-        console.log({ deliveryAddress, pickupAddress });
-
-        if (!deliveryAddress || !pickupAddress) {
-            throw new Error('Missing pickup or delivery address');
-        }
-
-        const distanceAndDuration = await this.calculateDistanceAndDuration(pickupAddress, deliveryAddress);
-        pricingRequest.totalFee = await this.calculateFee(
+        const totalFee = this.calculateFee(
             distanceAndDuration.distance.raw,
-            distanceAndDuration.duration.raw
+            distanceAndDuration.duration.raw,
+            totalWeight
         );
+
+        pricingRequest.totalFee = totalFee;
 
         const [insertedRow] = await this._dbClient.insert(pricingRequestsTable).values(pricingRequest).returning();
         return this._mapper.map(insertedRow, POJO.PRICING_REQUEST_TABLE_SCHEMA, POJO.PRICING_REQUEST);
     }
 
-    private async calculateFee(distanceMeters: number, durationSeconds: number) {
+    private calculateFee(distanceMeters: number, durationSeconds: number, totalWeight: number) {
+        console.log(distanceMeters)
+        console.log(durationSeconds)
         const baseFee = 3.0;
         const perMileRate = 1.0;
         const perMinuteRate = 0.5;
-        const miles = distanceMeters / 1609.34;
-        const minutes = durationSeconds / 60;
-        return baseFee + perMileRate * miles + perMinuteRate * minutes;
+
+        const miles = distanceMeters / 1609.34; // Convert meters to miles
+        const minutes = durationSeconds / 60; // Convert seconds to minutes
+
+        const distanceCharge = perMileRate * miles // Distance charged mile * mile rate
+        const weightCharge = totalWeight * 0.1 // 10% charge on weight
+
+        return baseFee + distanceCharge+ weightCharge;
     }
 
     private async calculateDistanceAndDuration(pickupAddress: string, deliveryAddress: string) {
@@ -47,8 +55,7 @@ export class DeliveryService {
         );
 
         const data = await res.json();
-        console.log(data);
-        return {
+        const resData =  {
             distance: {
                 raw: data.rows[0].elements[0].distance.value,
                 text: data.rows[0].elements[0].distance.text
@@ -58,5 +65,8 @@ export class DeliveryService {
                 text: data.rows[0].elements[0].duration.text
             }
         };
+
+        console.log(resData);
+        return resData;
     }
 }
