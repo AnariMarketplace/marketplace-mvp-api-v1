@@ -8,6 +8,7 @@ import { ServerAuthClient } from '@anarimarketplace/auth-lib';
 import { Route } from '@anarimarketplace/routing';
 import { SNSClient } from '@aws-sdk/client-sns';
 import { getToken } from './handlers/getToken';
+import { userCreatedEventWebhookHandler } from './handlers/userCreatedEventWebhookHandler';
 //Setup server
 export function initServer() {
     const client = postgres(process.env.DATABASE_URL!, { prepare: false });
@@ -37,7 +38,8 @@ export function initServer() {
     const routes: Route[] = [
         { method: 'PATCH', path: '/drivers/realtime-metadata', handler: patchDriverRealtimeMetadataHandler },
         { method: 'GET', path: '/sellers/{id}/info', handler: getSellerInfoHandler },
-        { method: 'GET', path: '/auth/{id}/token', handler: getToken }
+        { method: 'GET', path: '/auth/{id}/token', handler: getToken },
+        { method: 'POST', path: '/auth/webhook/user-created', handler: userCreatedEventWebhookHandler }
     ];
 
     return {

@@ -1,8 +1,8 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { eq } from 'drizzle-orm';
 import { Mapper } from '@automapper/core';
-import { DriverRealtimeMetadata } from '../types/types';
-import { driverRealtimeMetadataTable, driversTable, sellersTable } from '../db';
+import { DriverRealtimeMetadata, User } from '../types/types';
+import { driverRealtimeMetadataTable, driversTable, sellersTable, usersTable } from '../db';
 
 export class UserService {
     constructor(private readonly _dbClient: PostgresJsDatabase, private readonly _mapper: Mapper) {}
@@ -34,5 +34,9 @@ export class UserService {
     async getSellerInfo(id: string) {
         const seller = await this._dbClient.select().from(sellersTable).where(eq(sellersTable.id, id));
         return seller[0];
+    }
+
+    async createUser(user: Partial<User>) {
+        await this._dbClient.insert(usersTable).values(user);
     }
 }
