@@ -32,7 +32,7 @@ export const createPricingRequestHandler = async (
         POJO.PRICING_REQUEST
     );
 
-    const createdPricingRequest = await service.createPricingRequest(pricingRequest);
+    const createdPricingRequest = await service.createPricingRequest(pricingRequest, validatedRequest.items);
 
     const responseDto = mapper.map<PricingRequest, PricingRequestOutputDto>(
         createdPricingRequest,
