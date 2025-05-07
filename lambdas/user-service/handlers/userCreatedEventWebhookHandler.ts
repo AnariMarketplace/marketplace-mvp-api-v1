@@ -15,6 +15,7 @@ export const userCreatedEventWebhookHandler = async (
     await service.createUser({
         authId: res.data.id
     });
+
     return {
         statusCode: 200,
         body: JSON.stringify({ message: 'User created event webhook processed' })

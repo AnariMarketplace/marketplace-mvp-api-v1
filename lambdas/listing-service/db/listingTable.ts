@@ -4,7 +4,7 @@ import { listingServiceSchema } from './schema';
 export const listingsTable = listingServiceSchema.table('listings', {
     title: varchar().notNull(),
     sellerId: uuid('seller_id').notNull(),
-    purchaseType: varchar('purchase_type').default('SALE'),
+    type: varchar().default('RENTAL'),
     id: uuid('id').defaultRandom().primaryKey(),
     price: decimal().notNull(),
     condition: varchar(),
@@ -13,5 +13,8 @@ export const listingsTable = listingServiceSchema.table('listings', {
     height: decimal(),
     width: decimal(),
     length: decimal(),
-    color: varchar()
+    color: varchar(),
+    category: varchar(),
+    description: varchar(),
+    photos: varchar().array()
 });

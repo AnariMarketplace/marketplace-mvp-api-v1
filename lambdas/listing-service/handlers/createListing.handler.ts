@@ -15,7 +15,7 @@ export const createListingHandler = async (
     authClient: ServerAuthClient
 ): Promise<APIGatewayProxyResult> => {
     const { multiValueHeaders, body: rawBody } = event;
-
+    console.log('Create listing handler called', rawBody);
     // 1) Auth
     const token = authClient.requireAuthToken(multiValueHeaders);
     const user = await authClient.getUserFromToken(token);
@@ -31,6 +31,8 @@ export const createListingHandler = async (
         mergedRequest,
         (zErr) => new BadRequestError('Invalid listing input', { context: zErr.errors })
     );
+
+    console.log('Input', input);
 
     // 3) Map → persist → map
     const entity = mapper.map<ListingInputDto, Listing>(input, POJO.LISTING_INPUT_DTO, POJO.LISTING);

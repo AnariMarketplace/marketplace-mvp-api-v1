@@ -147,6 +147,10 @@ functions:
           path: auth/webhook/user-created
           method: post
           private: false
+      - http:
+          path: become-seller
+          method: post
+          private: false
 resources:
   Resources:
     FanoutTopic:
